@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/NextJob/main.qml</file>
+        <file>qml/NextJob/MainPage.qml</file>
+        <file>qml/NextJob/NJConstants.js</file>
+        <file>qml/NextJob/ResultView.qml</file>
+        <file>qml/NextJob/SearchView.qml</file>
+        <file>qml/NextJob/NJHeader.qml</file>
+        <file>qml/NextJob/AddAlert.qml</file>
+        <file>qml/NextJob/JobDetails.qml</file>
+        <file>qml/NextJob/NJUiConstants_harmattan.js</file>
+        <file>qml/NextJob/SearchBar.qml</file>
+    </qresource>
+</RCC>
