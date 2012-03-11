@@ -1,3 +1,4 @@
+#include <QDebug>
 #include "Constants.h"
 #include "JobAlert.h"
 #include "JobModel.h"
@@ -32,23 +33,50 @@ JobModel *JobAlert::model() const {
     return d->model;
 }
 
-int JobAlert::newItemsCount() const {
+QString JobAlert::displayName() const {
+    QString name("%1 - %2 - %3");
+    return name.arg(key().value(NJ_SKILL).toString(),
+              key().value(NJ_LOCATION).toString(),
+              key().value(NJ_COUNTRY).toString()).simplified();
+}
+
+QString JobAlert::displayNameWithJobCount() const {
+    QString name =("%1 (%2) new job(s)");
+    return name.arg(displayName(),QString().setNum(d->newItemCount));
+}
+
+QString JobAlert::skill() const {
+    return key().value(NJ_SKILL).toString();
+}
+
+QString JobAlert::location() const {
+    return key().value(NJ_LOCATION).toString();
+}
+
+QString JobAlert::country() const {
+    return key().value(NJ_COUNTRY).toString();
+}
+
+int JobAlert::newJobsCount() const {
     return d->newItemCount;
 }
 
-void JobAlert::startUpdate() {
-    if(d->model)
-        delete d->model;
-    d->model = new JobModel;
-    d->model->addKey(d->key);
-    connect(d->model,SIGNAL(updateAvailable(int)),
-            this,SLOT(onUpdateAvailable(int)),
+void JobAlert::update() {
+    if(!d->model)
+        d->model = new JobModel(JobModel::Alert,this);
+    connect(d->model,SIGNAL(updateAvailable(int,QVariantMap)),
+            this,SLOT(onUpdateAvailable(int,QVariantMap)),
             Qt::UniqueConnection);
+    connect(this,SIGNAL(updateAvailable(int,QVariantMap)),
+            this,SIGNAL(newJobsCountChanged()),
+            Qt::UniqueConnection);
+    d->model->addKey(d->key);
 }
 
-void JobAlert::onUpdateAvailable(int newItemsCount) {
+void JobAlert::onUpdateAvailable(int newItemsCount,QVariantMap key) {
     d->newItemCount = newItemsCount;
-    emit updateAvailable(d->key,newItemsCount);
+    if(newItemsCount)
+        emit updateAvailable(newItemsCount,key);
 }
 
 // eof

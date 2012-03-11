@@ -8,6 +8,7 @@ Item {
     id: resultViewContainer
     property alias model: resultListView.model;
     property bool loading: false;
+    property bool loadMoreDataWhenRequired: true;
     signal scrolling;
     signal scrollingStopped;
     width: parent.width;
@@ -65,7 +66,7 @@ Item {
 
         onAtYEndChanged:{
             // request for new data set
-            if(atYEnd && count) {
+            if(atYEnd && loadMoreDataWhenRequired && count) {
                 _prevCount = count;
                 loading = true;
                 model.next();
@@ -84,7 +85,7 @@ Item {
                 id: jobInfoView;
                 property QtObject jobInfo: jobinfo; // role name for jobinfo
                 width: (jobInfo.isValid())?(parent.width):(0);
-                height:(jobInfo.isValid())?(jobInfoColumn.height):(0);
+                height:(jobInfo.isValid())?(jobInfoContainer.height):(0);
                 visible: jobInfo.isValid();
                 radius: 7;
                 color: "transparent";
@@ -97,58 +98,69 @@ Item {
 
                 MouseArea {
                     anchors.fill: parent;
-                    onClicked: if(jobInfoView.jobInfo.isValid()) showDetails(jobInfoView.jobInfo);
+                    onClicked: {
+                        viewedFlag.visible = false;
+                        if(jobInfoView.jobInfo.isValid()) showDetails(jobInfoView.jobInfo);
+                    }
                 }
 
-                Column {
-                    id: jobInfoColumn
-                    spacing: 4;
+                Row {
+                    id: jobInfoContainer
                     width: parent.width;
-                    anchors {
-                        left: parent.left;
-                        right: parent.right;
-                        leftMargin: 7;
-                        rightMargin: 7;
-                    }
-
-                    Label {
-                        id: title;
-                        text: jobInfo.title();
-                        width: parent.width;
-                        wrapMode: Text.WordWrap;
-                        elide: Text.ElideRight
-                        maximumLineCount: 1;
-                        font.bold: true;
-                        font.pixelSize: NJUiConstants.UI_RESULTVIEW_TITLE_FONT_SIZE;
-                    }
-
-                    Label {
-                        id: employer
-                        text: jobInfo.employer();
-                        width: parent.width;
-                        wrapMode: Text.WrapAnywhere;
-                        elide: Text.ElideRight
-                        maximumLineCount: 1;
-                        font.pixelSize: NJUiConstants.UI_RESULTVIEW_SUBTITLE_FONT_SIZE;
-                    }
-
-                    Label {
-                        id: location;
-                        text: jobInfo.location();
-                        width: parent.width;
-                        wrapMode: Text.WordWrap
-                        elide: Text.ElideRight
-                        maximumLineCount: 1;
-                        font.pixelSize: NJUiConstants.UI_RESULTVIEW_EXTRATEXT_FONT_SIZE;
-                        color: "grey";
-                    }
-
+                    spacing: 12
                     Rectangle {
-                        id: seperator
-                        height: 2;
-                        anchors {
-                            left: parent.left;
-                            right: parent.right;
+                        id: viewedFlag
+                        height: parent.height - 10;
+                        width: NJUiConstants.UI_VIEWED_FLAG_WIDTH;
+                        color: NJUiConstants.UI_VIEWED_FLAG_COLOR;
+                        smooth: true;
+                    }
+
+                    Column {
+                        id: jobInfoColumn
+                        width: parent.width - viewedFlag.width;
+                        spacing: 4;
+
+                        Label {
+                            id: title;
+                            text: jobInfo.title();
+                            width: parent.width;
+                            wrapMode: Text.WordWrap;
+                            elide: Text.ElideRight
+                            maximumLineCount: 1;
+                            font.bold: true;
+                            font.pixelSize: NJUiConstants.UI_RESULTVIEW_TITLE_FONT_SIZE;
+                        }
+
+                        Label {
+                            id: employer
+                            text: jobInfo.employer();
+                            width: parent.width;
+                            wrapMode: Text.WrapAnywhere;
+                            elide: Text.ElideRight
+                            maximumLineCount: 1;
+                            font.pixelSize: NJUiConstants.UI_RESULTVIEW_SUBTITLE_FONT_SIZE;
+                        }
+
+                        Label {
+                            id: location;
+                            text: jobInfo.location();
+                            width: parent.width;
+                            wrapMode: Text.WordWrap
+                            elide: Text.ElideRight
+                            maximumLineCount: 1;
+                            font.pixelSize: NJUiConstants.UI_RESULTVIEW_EXTRATEXT_FONT_SIZE;
+                            color: "grey";
+                        }
+
+                        Rectangle {
+                            id: seperator
+                            height: NJUiConstants.UI_LINE_HEIGHT;
+                            color: NJUiConstants.UI_LINE_COLOR;
+                            anchors {
+                                left: parent.left;
+                                right: parent.right;
+                            }
                         }
                     }
                 }

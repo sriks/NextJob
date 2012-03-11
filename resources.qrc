@@ -10,5 +10,16 @@
         <file>qml/NextJob/JobDetails.qml</file>
         <file>qml/NextJob/NJUiConstants_harmattan.js</file>
         <file>qml/NextJob/SearchBar.qml</file>
+        <file>qml/NextJob/AlertUpdates.qml</file>
+        <file>qml/NextJob/NewJobsForAlert.qml</file>
+        <file>qml/NextJob/Alerts.qml</file>
+        <file>images/defaulticon.svg</file>
+        <file>qml/NextJob/QuickLaunchIcon.qml</file>
+        <file>images/search.svg</file>
+        <file>images/add.svg</file>
+        <file>images/alerts.svg</file>
+        <file>images/delete.svg</file>
+        <file>images/share.svg</file>
+        <file>images/logo.svg</file>
     </qresource>
 </RCC>

@@ -1,9 +1,9 @@
 #include "JobModel.h"
 #include "JobModelPrivate.h"
 
-JobModel::JobModel(QObject *parent) :
+JobModel::JobModel(JobModelType type,QObject *parent) :
     QAbstractListModel(parent) {
-    d = new JobModelPrivate(this);
+    d = new JobModelPrivate(this,type);
     QHash<int, QByteArray> roles;
     roles[JobModel::JobInfo] = "jobinfo"; // Role name to get jobinfo
     setRoleNames(roles);
@@ -26,8 +26,23 @@ void JobModel::addKey(QVariantMap key) {
     d->add(key);
 }
 
+QVariantMap JobModel::key() const {
+    return d->key();
+}
+
+QUrl JobModel::baseUrl() const {
+    return d->mBaseUrl;
+}
+
 void JobModel::next() {
     d->fetchMoreData();
+}
+
+/*!
+  Resets the model, the same data is again appended to list.
+  **/
+void JobModel::reset() {
+    d->resetModel();
 }
 
 int JobModel::count() const {

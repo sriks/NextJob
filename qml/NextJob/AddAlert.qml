@@ -6,36 +6,52 @@ Page {
     id: searchView;
     property string msg: NJConstants.ADDALERTPAGE;
 
-    NJHeader {
-        id: header;
-        title: "Job alert";
+    function addAlert() {
+        njengine.addAlert({"skill" : searchBar.skill,
+                           "location" : searchBar.location,
+                           "country" : searchBar.country});
     }
 
-    Column {
-        id: searchBox;
-        spacing: 7;
+    tools: ToolBarLayout {
+        id: tools
+        visible: true
+
+        ToolIcon {
+            platformIconId: "toolbar-back"
+            anchors.left: parent.left;
+            onClicked: goBack();
+        }
+
+        ToolIcon {
+            platformIconId: "toolbar-view-menu"
+            anchors.right: (parent === undefined) ? undefined : parent.right
+            onClicked: showMenu();
+        }
+    }
+
+    NJHeader {
+        id: header;
+        title: "Add job alert";
+    }
+
+    SearchBar {
+        id: searchBar;
+        showDefaultSearchButton: false;
         anchors {
             top: header.bottom;
-            topMargin: 5;
-            left: parent.left;
-            leftMargin: 10;
-            right: parent.right;
-            rightMargin: 10;
+            topMargin: 15;
         }
+    }
 
-        TextField {
-            id: skill;
-            placeholderText: "Skill like C++,Qt,Java"
+    Button {
+        id: addAlertButton;
+        text: "Add Alert";
+        anchors {
+            top: searchBar.bottom;
+            topMargin: 15
+            horizontalCenter: parent.horizontalCenter;
         }
-
-        Button {
-            id: add
-            text: "Add";
-            onClicked: {
-                if(skill.text.length)
-                    njengine.addAlert({"skill" : skill.text});
-            }
-        }
+        onClicked: addAlert();
     }
 }
 

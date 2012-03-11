@@ -2,6 +2,7 @@
 #define JOBMODEL_H
 
 #include <QAbstractListModel>
+#include <QUrl>
 
 class JobModelPrivate;
 class JobModel : public QAbstractListModel
@@ -10,8 +11,17 @@ class JobModel : public QAbstractListModel
     enum JobModelRoles {
         JobInfo = Qt::UserRole + 1
     };
+
 public:
-    explicit JobModel(QObject *parent = 0);
+    /*!
+      Job model type
+      **/
+    enum JobModelType {
+        Search, // General search, updates all items
+        Alert   // For using with job alert, updates if any new items are found.
+    };
+
+    explicit JobModel(JobModelType type,QObject *parent = 0);
     ~JobModel();
 
     // from QAbstractListModel
@@ -22,14 +32,17 @@ signals:
     void networkRequestStarted();
     void networkRequestFinished();
     void error(QString errorMessage);
-    void updateAvailable(int newItemsCount);
+    void updateAvailable(int newItemsCount,QVariantMap source);
     void noUpdateAvailable();
     void dataFinished();
 
 public slots:
     int count() const;
     void addKey(QVariantMap key);
+    QVariantMap key() const;
+    QUrl baseUrl() const;
     void next();
+    void reset();
 
 private:
     friend class JobModelPrivate;

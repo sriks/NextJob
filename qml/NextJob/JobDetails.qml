@@ -1,7 +1,6 @@
 // import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
 import QtQuick 1.1
 import com.nokia.meego 1.0
-import QtWebKit 1.0
 
 import "NJUiConstants_harmattan.js" as NJUiConstants;
 
@@ -29,7 +28,7 @@ Page {
     NJHeader {
         id: header;
         anchors.top: parent.top;
-        title: "Details";
+        title: "Job details";
         subTitle: jobInfo.title();
     }
 
@@ -54,7 +53,7 @@ Page {
         Column {
             id: info
             width: parent.width;
-            spacing: 10;
+            spacing: 7;
 
             anchors {
                 left: parent.left;
@@ -69,6 +68,7 @@ Page {
                 width: parent.width;
                 wrapMode: Text.WordWrap;
                 font.pixelSize: NJUiConstants.UI_DETAILS_TITLE_FONT_SIZE;
+                font.bold: true;
             }
 
             Text {
@@ -88,11 +88,21 @@ Page {
             }
 
             Text {
+                id: date;
+                text: jobInfo.date();
+                width: parent.width;
+                wrapMode: Text.WordWrap;
+                font.pixelSize: NJUiConstants.UI_DETAILS_DESC_FONT_SIZE;
+                color: "blue";
+            }
+
+            Text {
                 id: desc;
                 text: jobInfo.description();
                 width: parent.width;
                 wrapMode: Text.WordWrap;
                 font.pixelSize: NJUiConstants.UI_DETAILS_DESC_FONT_SIZE;
+                color: NJUiConstants.UI_CONTENT_TEXT_COLOR;
             }
 
             Button {

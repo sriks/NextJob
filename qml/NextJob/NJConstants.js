@@ -14,3 +14,9 @@ var MAINPAGE        =   "mainpage";
 var SEARCHPAGE      =   "searchpage";
 var ADDALERTPAGE    =   "addalert";
 /* Page ids */
+
+/* Quicklanuch ids */
+var QUICK_LAUNCH_ADDALERT   = "addalert";
+var QUICK_LAUNCH_SEARCH     = "search";
+var QUICK_LAUNCH_ALERTS     = "alerts";
+/* Quicklanuch ids */

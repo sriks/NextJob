@@ -39,6 +39,10 @@ QUrl JobInfo::url() const {
     return d->info.value(NJ_PROP_KEY_URL).toUrl();
 }
 
+QString JobInfo::date() const {
+    return d->info.value(NJ_PROP_KEY_DATE).toString();
+}
+
 bool JobInfo::isFavorite() const {
     return d->info.value(NJ_PROP_KEY_FAV,false).toBool();
 }

@@ -7,23 +7,39 @@
 class JobManagerPrivate;
 class JobModel;
 class JobAlert;
+class AlertModel;
 class RSSManager;
 class JobManager : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(int alertsCount READ alertsCount NOTIFY alertsCountChanged)
+
 public:
-    explicit JobManager(QObject *parent = 0);
     ~JobManager();
+    static JobManager* instance();
     static RSSManager* feedManager();
+protected:
+    explicit JobManager(QObject *parent = 0);
 signals:
     void searchResultAvailable(JobModel* jobModel);
-    void alertUpdated(QVariantMap key,int newItemsCount);
+    void alertAdded(QVariantMap key);
+    void alertRemoved(QVariantMap key);
+    void alertUpdated(int newItemsCount,QVariantMap source);
+    void alertsCountChanged();
 
 public slots:
-    void search(QVariantMap key);
+    JobModel* search(QVariantMap key);
     void addAlert(QVariantMap key);
+    void removeAlert(QVariantMap key);
+    void removeAllAlerts();
+    void updateAlert(QVariantMap key);
     JobAlert* alert(QVariantMap key) const;
-    void fetchAlertUpdates();
+    QList<JobAlert*> alerts() const;
+    JobAlert* alert(int index) const;
+    int alertsCount() const;
+    void updateAllAlerts();
+    AlertModel* newJobsAlertModel();
+    AlertModel* allAlertsModel();
 
 private:
     JobManagerPrivate* d;

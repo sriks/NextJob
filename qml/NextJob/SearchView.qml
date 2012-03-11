@@ -74,9 +74,8 @@ Page {
             width: parent.width;
             anchors {
                 top: searchBar.bottom;
-                topMargin: 10;
+                topMargin: 2;
                 bottom: parent.bottom;
-                bottomMargin: 10;
             }
 // Fix it.
 //            onScrolling: searchBar.disappear();

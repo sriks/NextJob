@@ -3,6 +3,9 @@ folder_01.source = qml/NextJob
 folder_01.target = qml
 DEPLOYMENTFOLDERS = folder_01
 
+# Enable to test in offline with dummy data
+#DEFINES += TEST_WITH_DUMMY_DATA
+
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =
 
@@ -35,7 +38,8 @@ SOURCES += main.cpp \
     JobModel.cpp \
     JobInfo.cpp \
     JobModelPrivate.cpp \
-    JobAlert.cpp
+    JobAlert.cpp \
+    AlertModel.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -58,7 +62,8 @@ HEADERS += \
     JobInfo.h \
     JobModelPrivate.h \
     Constants.h \
-    JobAlert.h
+    JobAlert.h \
+    AlertModel.h
 
 contains(MEEGO_EDITION,harmattan) {
     RESOURCES +=

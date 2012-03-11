@@ -21,6 +21,7 @@ public slots:
     QString location() const;
     QString description() const;
     QUrl    url() const;
+    QString date() const;
     bool    isFavorite() const;
     bool    setFavorite(bool fav);
 private:

@@ -6,6 +6,7 @@ import "NJUiConstants_harmattan.js" as NJUiConstants;
 Rectangle {
     id: searchBar
     property Item searchBarContent: searchContainer;
+    property alias showDefaultSearchButton: searchButton.visible;
     property alias skill: generalSearchBox.text;
     property alias location: locationSearchBox.text;
     property alias country: countrySelection.text;
@@ -102,7 +103,7 @@ Rectangle {
             Button {
                 id: searchButton;
                 text: "Go"
-                width: 70;
+                width: 70*showDefaultSearchButton;
                 onClicked: {
                     advancedSearchFields.hideAdvancedSearch();
                     searchEntered();
@@ -139,14 +140,18 @@ Rectangle {
             Text {
                 id: advancedSearchToogleText;
                 text: "Show advanced search";
+                smooth: true;
                 font.pixelSize: NJUiConstants.UI_SEARCHBAR_ADVSEARCH_FONT_SIZE;
+                font.bold: true
             }
 
             Rectangle {
-                id: simpleLine
+                id: lineSeperator;
                 width: parent.width - (advancedSearchToogleText.width + advancedSearchFields.spacing);
                 height: NJUiConstants.UI_LINE_HEIGHT;
+                color: NJUiConstants.UI_LINE_COLOR;
                 anchors.verticalCenter: parent.verticalCenter;
+                smooth: true;
             }
 
             MouseArea {
@@ -211,23 +216,24 @@ Rectangle {
                     }
 
                     property string placeHolderText: "Select Country";
-                    text: (countrySelectionDialog.selectedIndex >=0)
-                              ?(countrySelectionDialog.model.get(countrySelectionDialog.selectedIndex).name)
-                              :(placeHolderText)
-                    onClicked: countrySelectionDialog.open();
+                    text: placeHolderText;
+//                    text: (countrySelectionDialog.selectedIndex >=0)
+//                              ?(countrySelectionDialog.model.get(countrySelectionDialog.selectedIndex).name)
+//                              :(placeHolderText)
+//                    onClicked: countrySelectionDialog.open();
                  }
             }
 
-            // TODO: This is occupying whole screen, even when not visible. Fix it.
-            SelectionDialog {
-                id: countrySelectionDialog
-                titleText: "Select country"
-                model: ListModel {
-                    ListElement { name: "India" }
-                    ListElement { name: "USA" }
-                    ListElement { name: "Australia" }
-                }
-            }
+//            // TODO: This is occupying whole screen, even when not visible. Fix it.
+//            SelectionDialog {
+//                id: countrySelectionDialog
+//                titleText: "Select country"
+//                model: ListModel {
+//                    ListElement { name: "India" }
+//                    ListElement { name: "USA" }
+//                    ListElement { name: "Australia" }
+//                }
+//            }
 
         }
     }

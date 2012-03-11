@@ -1,5 +1,7 @@
-
+#if defined(TEST_WITH_DUMMY_DATA)
 #include <QTimer>
+#include <QDate>
+#endif
 #include <QDebug>
 #include "JobModelPrivate.h"
 #include "rssmanager.h"
@@ -17,8 +19,9 @@ const int MAX_ITEMS         = 60;
 // hopefully it can be done in add()
 const QString NJ_SERVER_URL = "http://www.indeed.co.in/rss?";
 
-JobModelPrivate::JobModelPrivate(JobModel* qPtr,QObject *parent) :
+JobModelPrivate::JobModelPrivate(JobModel* qPtr,JobModel::JobModelType type,QObject *parent) :
                  QObject(parent),
+                 mJobModelType(type),
                  mDataOffset(0),
                  mCount(0),
                  mDataFinished(false),
@@ -65,16 +68,23 @@ RSSParser *JobModelPrivate::currentParser() {
     return mCurrentParser;
 }
 
+QVariantMap JobModelPrivate::key() const {
+    return mKey;
+}
+
 /*!
   Adds key to fetch data
   **/
 void JobModelPrivate::add(QVariantMap key) {
     cleanup();
+    mKey = key;
     QString skill,loc;
     if(key.size()) {
         skill = key.value(NJ_SKILL,QVariant()).toString();
         loc   = key.value(NJ_LOCATION,QVariant()).toString();
     }
+    // Construct base url
+    // TODO: Make this to be generic
     if(!skill.isEmpty()) {
          mBaseUrl = NJ_SERVER_URL + "q=" + skill;
         if(!loc.isEmpty())
@@ -98,6 +108,11 @@ void JobModelPrivate::cleanup() {
     delete mCurrentParser;
     mCurrentParser = NULL;
     mInvalidateCurrentParser = true;
+    mKey.clear();
+    QListIterator<QUrl> iter(mAdditionalUrls);
+    while(iter.hasNext())
+        feedMgr()->remove(iter.next());
+    mAdditionalUrls.clear();
 }
 
 void JobModelPrivate::fetchMoreData() {
@@ -107,9 +122,12 @@ void JobModelPrivate::fetchMoreData() {
     QTimer::singleShot(4000,this,SLOT(sendDummyData()));
     return;
 #endif
-    if(!mDataFinished && mCount >= MAX_ITEMS_PER_REQ && mCount <= MAX_ITEMS) {
+    if(/*mJobModelType == JobModel::Search &&*/
+       !mDataFinished &&
+       mCount >= MAX_ITEMS_PER_REQ && mCount <= MAX_ITEMS) {
         int nextStart = (MAX_ITEMS_PER_REQ*mDataOffset)+1;
         QUrl url = mBaseUrl+"&start="+QString().setNum(nextStart);
+        mAdditionalUrls.append(url); // these are removed from feedmgr with cleanup
         sendRequest(url);
     } else {
         qDebug()<<Q_FUNC_INFO<<"Max items reached.."<<mCount;
@@ -119,12 +137,11 @@ void JobModelPrivate::fetchMoreData() {
 }
 
 void JobModelPrivate::sendRequest(QUrl url) {
+    qDebug()<<Q_FUNC_INFO<<url;
 #if defined(TEST_WITH_DUMMY_DATA)
     updateAvailable(url,MAX_ITEMS_PER_REQ);
 #else
-    qDebug()<<Q_FUNC_INFO<<url;
     mCurrentUrl = url; // Conviniently updating it here
-    feedMgr()->removeAll();
     feedMgr()->add(url);
     feedMgr()->update(url);
     emit q->networkRequestStarted();
@@ -138,7 +155,10 @@ void JobModelPrivate::sendDummyData() {
 #endif
 
 void JobModelPrivate::updateAvailable(QUrl url, int newItemsCount) {
-    qDebug()<<Q_FUNC_INFO<<url<<":"<<newItemsCount;
+    // Check if this update belongs to us
+    if(url != mCurrentUrl)
+        return;
+    qDebug()<<Q_FUNC_INFO<<"url :"<<newItemsCount;
     mInvalidateCurrentParser = true;
     emit q->networkRequestFinished();
     RSSParser* p = currentParser();
@@ -147,22 +167,31 @@ void JobModelPrivate::updateAvailable(QUrl url, int newItemsCount) {
 #else
     if(!mDataFinished && p && p->count()) {
 #endif
-        // Let us handle only fixed number of items per dataset.
-        if(newItemsCount > MAX_ITEMS_PER_REQ)
-            newItemsCount = MAX_ITEMS_PER_REQ;
+        int items = 0;
+        if(JobModel::Search == mJobModelType) {
+            items =  p->count();
+            // Let us handle only fixed number of items per dataset.
+            if(items > MAX_ITEMS_PER_REQ)
+                items = MAX_ITEMS_PER_REQ;
+        } else if(JobModel::Alert == mJobModelType) {
+            items = newItemsCount;
+        }
+
         int prevCount = mCount;
-        mCount += newItemsCount;
-        if(mCount == newItemsCount)
+        mCount += items;
+
+        if(mCount == items)
             resetModel();
-        else if (mCount > newItemsCount)
+        else if (mCount > items)
             append(prevCount-1,mCount);
 
-        if(newItemsCount >= MAX_ITEMS_PER_REQ)
+        emit q->updateAvailable(newItemsCount,mKey);
+
+        if(items >= MAX_ITEMS_PER_REQ)
             mDataOffset++;
         else
             mDataFinished = true;
 
-        emit q->updateAvailable(newItemsCount);
     } else {
         qWarning()<<Q_FUNC_INFO<<"No items available for "<<url;
         emit q->noUpdateAvailable();
@@ -186,7 +215,6 @@ JobInfo *JobModelPrivate::at(int index) {
         info = new JobInfo(parseForInfo(i),this);
         mData.insert(index,info);
     }
-    qDebug()<<Q_FUNC_INFO<<"Returning info "<<info;
     return info;
 }
 
@@ -198,6 +226,7 @@ QVariantMap JobModelPrivate::parseForInfo(int index) {
     info.insert(NJ_PROP_KEY_TITLE,QString("Qt Developer ")+QString().setNum((mDataOffset-1)*MAX_ITEMS_PER_REQ + index));
     info.insert(NJ_PROP_KEY_EMPNAME,QString("Dreamcode"));
     info.insert(NJ_PROP_KEY_LOCATION,QString("Hyderabad"));
+    info.insert(NJ_PROP_KEY_DATE,QDate::currentDate().toString());
     QString testDesc = "Strong Experience in building multithreaded QT applicationsStrong knowledge in multithreaded programming.</br>Strong object oriented programming skills.Strong Experience in debugging and analysis skills to identify memory leaks and dead locks.Expertise in VS2008/10 IDE.";
     info.insert(NJ_PROP_KEY_DESCRIPTION,testDesc.simplified());
     return info;
