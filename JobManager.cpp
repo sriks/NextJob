@@ -1,29 +1,44 @@
 #include <QMap>
 #include <QDebug>
+#include <QFile>
+#include <QXmlStreamWriter>
+#include <QStringListIterator>
 #include "Constants.h"
 #include "JobManager.h"
 #include "JobModel.h"
 #include "JobAlert.h"
 #include "AlertModel.h"
+#include "JobInfo.h"
 #include "rssmanager.h"
+
+const QString FAV_FILENAME("njfavs.xml");
+const QString FAV_XML_ROOT("favs");
+const QString FAV_XML_ITEM("item");
 
 struct JobManagerPrivate {
     JobModel* searchModel; // used for job search
+    JobModel* favoritesModel; // used for favorite jobs
     AlertModel* newJobsAlertModel; // lists only alerts which has new jobs
     AlertModel* allJobsAlertModel; // lists all alerts
     JobManager* master; // non-owing - do not delete
     QMap<QString,JobAlert*> alerts;
+    QList< QVariantMap > favs;
+    QStringList jobInfoKeys;
 
     JobManagerPrivate(JobManager* mgr) {
         master = mgr;
         searchModel = NULL;
+        favoritesModel = NULL;
         newJobsAlertModel = NULL;
         allJobsAlertModel = NULL;
+        jobInfoKeys << NJ_PROP_KEY_TITLE << NJ_PROP_KEY_EMPNAME << NJ_PROP_KEY_LOCATION << NJ_PROP_KEY_DESCRIPTION
+                    << NJ_PROP_KEY_URL << NJ_PROP_KEY_DATE << NJ_PROP_KEY_SOURCE;
     }
 
     ~JobManagerPrivate() {
         saveState();
         delete searchModel;
+        delete favoritesModel;
         delete newJobsAlertModel;
         delete allJobsAlertModel;
         qDeleteAll(alerts.begin(),alerts.end());
@@ -39,7 +54,19 @@ struct JobManagerPrivate {
                key.value(NJ_COUNTRY).toString().simplified();
     }
 
+    QString favId(QVariantMap key) const {
+        return key.value(NJ_PROP_KEY_TITLE).toString().simplified() +
+               key.value(NJ_PROP_KEY_EMPNAME).toString().simplified() +
+               key.value(NJ_PROP_KEY_LOCATION).toString().simplified() +
+               key.value(NJ_PROP_KEY_URL).toString().simplified();
+    }
+
     void restoreState() {
+        restoreAlerts();
+    }
+
+    void restoreAlerts() {
+        // alerts
         QMap< QUrl,FeedUserData > userdatamap(JobManager::feedManager()->userData());
         QMapIterator< QUrl,FeedUserData > iter(userdatamap);
         while(iter.hasNext()) {
@@ -50,12 +77,90 @@ struct JobManagerPrivate {
         }
     }
 
+    void restoreFavs() {
+        // favorites
+        static bool restored = false;
+        if(restored)
+            return;
+        QFile f(favFilePath());
+        if(f.open(QIODevice::ReadOnly)) {
+            RSSParser* p = new RSSParser;
+            p->setSource(&f);
+            int c = p->count();
+            qDebug()<<Q_FUNC_INFO<<c;
+            for(int i=0;i<c;++i) {
+                QVariantMap key;
+                QStringListIterator iter(jobInfoKeys);
+                while(iter.hasNext()) {
+                    QString k = iter.next();
+                    key.insert(k,p->itemElement(i,k));
+                }
+                favs.append(key);
+            }
+            delete p;
+            restored = true;
+        }
+        f.close();
+    }
+
     void saveState() {
         QMapIterator<QString,JobAlert*> iter(alerts);
         while(iter.hasNext()) {
             JobAlert* a = iter.next().value();
             JobManager::feedManager()->setUserData(a->model()->baseUrl(),
                                                    convertToFeedUserData(a->key()));
+        }
+    }
+
+    QString favFilePath() const {
+        static QString path;
+        if(path.isEmpty())
+            path = JobManager::feedManager()->storagePath() + "/" + FAV_FILENAME;
+        return path;
+    }
+
+    // writes to fav file
+    void saveFavorites() {
+        if(favs.isEmpty())
+            return;
+        QFile f(favFilePath());
+        // TODO: Should we delete this file before using.
+        if(!f.open(QIODevice::WriteOnly)) {
+            qWarning()<<Q_FUNC_INFO<<"Unable to open file in write mode: "<<favFilePath();
+            return;
+        }
+
+        QXmlStreamWriter writer(&f);
+        writer.setAutoFormatting(true);
+        writer.writeStartDocument();
+        writer.writeStartElement(FAV_XML_ROOT);
+        QListIterator< QVariantMap > iter(favs);
+        while(iter.hasNext()) {
+            writer.writeStartElement(FAV_XML_ITEM);
+            QVariantMap key = iter.next();
+            QMapIterator< QString,QVariant > keyIter(key);
+            while(keyIter.hasNext()) {
+                keyIter.next();
+                writer.writeTextElement(keyIter.key(),keyIter.value().toString());
+            }
+            writer.writeEndElement(); // closing itemb
+        }
+        writer.writeEndElement();
+        writer.writeEndDocument();
+        f.close();
+    }
+
+    void addToFavorites(QVariantMap key) {
+        favs.insert(0,key); // to ensure that latest fav is at top
+    }
+
+    bool removeFromFavorites(QVariantMap key) {
+        int i = favs.indexOf(key);
+        if(i >= 0) {
+            favs.removeAt(i);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -85,7 +190,6 @@ struct JobManagerPrivate {
 JobManager::JobManager(QObject *parent) :
     QObject(parent) {
     d = new JobManagerPrivate(this);
-    d->restoreState();
 }
 
 JobManager::~JobManager() {
@@ -98,6 +202,16 @@ JobManager *JobManager::instance() {
     if(!mgr)
         mgr = new JobManager;
     return mgr;
+}
+
+/*!
+  Initializes jobmanager and loads with required data.
+  JobManager can be used after the signal initializationCompleted()
+  **/
+void JobManager::initialize() {
+    d->restoreState();
+    emit initializationCompleted();
+    d->restoreFavs();
 }
 
 /*!
@@ -212,5 +326,45 @@ AlertModel *JobManager::allAlertsModel() {
     }
     return d->allJobsAlertModel;
 }
+
+JobModel *JobManager::favoriteJobs() {
+    d->saveFavorites();
+    if(!d->favoritesModel) {
+        d->restoreFavs();
+        d->favoritesModel = new JobModel(JobModel::Favorites,this);
+        connect(this,SIGNAL(favoriteAdded(QVariantMap)),
+                d->favoritesModel,SLOT(reset()));
+        QString favPath = feedManager()->storagePath() + "/" + FAV_FILENAME;
+        QVariantMap key;
+        key.insert(NJ_FAV_PATH,QVariant(favPath));
+        d->favoritesModel->addKey(key);
+    }
+    d->favoritesModel->reset(); // load data
+    return d->favoritesModel;
+}
+
+void JobManager::addToFavorites(QVariantMap key) {
+    if(!isFavorite(key)) {
+        d->addToFavorites(key);
+        emit favoriteAdded(key);
+    }
+}
+
+void JobManager::removeFromFavorites(QVariantMap key) {
+    d->removeFromFavorites(key);
+}
+
+int JobManager::favoritesCount() const {
+    return d->favs.size();
+}
+
+QVariantMap JobManager::favoriteKey(int index) const {
+    return d->favs.at(index);
+}
+
+bool JobManager::isFavorite(QVariantMap key) const {
+    return d->favs.contains(key);
+}
+
 
 // eof

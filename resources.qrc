@@ -21,5 +21,12 @@
         <file>images/delete.svg</file>
         <file>images/share.svg</file>
         <file>images/logo.svg</file>
+        <file>qml/NextJob/SeparatorLine.qml</file>
+        <file>images/jobcounticon.svg</file>
+        <file>images/favorite.svg</file>
+        <file>images/favorite_quicklaunch.svg</file>
+        <file>qml/NextJob/Favorites.qml</file>
+        <file>images/newjobcounticon.svg</file>
+        <file>images/favoritejob.svg</file>
     </qresource>
 </RCC>

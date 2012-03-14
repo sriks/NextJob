@@ -216,7 +216,7 @@ Rectangle {
                     }
 
                     property string placeHolderText: "Select Country";
-                    text: placeHolderText;
+                    text: "India"
 //                    text: (countrySelectionDialog.selectedIndex >=0)
 //                              ?(countrySelectionDialog.model.get(countrySelectionDialog.selectedIndex).name)
 //                              :(placeHolderText)

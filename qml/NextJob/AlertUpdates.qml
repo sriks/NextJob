@@ -71,7 +71,7 @@ Item {
 
                     Image {
                        id: icon;
-                       source: "qrc:/images/defaulticon.svg";
+                       source: (alert.newJobsCount)?("qrc:/images/newjobcounticon.svg"):("qrc:/images/jobcounticon.svg");
                        smooth: true;
                        width: NJUiConstants.UI_DEFAULT_LISTICON_SIZE;
                        height: NJUiConstants.UI_DEFAULT_LISTICON_SIZE;
@@ -101,6 +101,7 @@ Item {
                         text: alert.skill();
                         width: parent.width;
                         wrapMode: Text.WordWrap;
+                        font.pixelSize: NJUiConstants.UI_RESULTVIEW_TITLE_FONT_SIZE;
                         font.bold: true;
                     }
                     Label {
@@ -108,22 +109,29 @@ Item {
                         text: alert.location();
                         width: parent.width;
                         wrapMode: Text.WordWrap;
+                        font.pixelSize: NJUiConstants.UI_RESULTVIEW_SUBTITLE_FONT_SIZE;
                     }
                     Label {
                         id: linethree;
                         text: alert.country();
                         width: parent.width;
                         wrapMode: Text.WordWrap;
-                    }
-
-                    Rectangle {
-                        id: lineSeperator;
-                        width: parent.width;
-                        height: NJUiConstants.UI_LINE_HEIGHT;
-                        color: NJUiConstants.UI_LINE_COLOR;
+                        font.pixelSize: NJUiConstants.UI_RESULTVIEW_EXTRATEXT_FONT_SIZE;
+                        color: NJUiConstants.UI_RESULTVIEW_EXTRATEXT_COLOR;
                     }
                 }
             }
+
+            SeparatorLine {
+                id: seperator;
+                width: parent.width - (10+10); // left,right margins
+                anchors {
+                    top: alertInfoContainer.bottom;
+                    topMargin: NJUiConstants.UI_DEFAULT_LISTITEM_SPACING;
+                    horizontalCenter: parent.horizontalCenter;
+                }
+            }
+
         }
     } // delegate
 }

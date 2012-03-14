@@ -7,12 +7,14 @@ Rectangle {
     property alias title: headerTitle.text;
     property alias subTitle: headerSubTitle.text;
     property bool busyIndicatorRunning: false;
-    height: NJUiConstants.UI_HEADER_HEIGHT;
     width: parent.width;
+    height: NJUiConstants.UI_HEADER_HEIGHT;
+    color: NJUiConstants.UI_HEADER_COLOR;
+
     gradient: Gradient {
-         GradientStop { position: 0.0; color: "#c5deea" }
-         GradientStop { position: 0.15; color: "#8abbd7" }
-         GradientStop { position: 1.0; color: "#066dab" }
+         GradientStop { position: 0.0; color: "#63b6db" }
+         // GradientStop { position: 0.15; color: "#8abbd7" }
+         GradientStop { position: 1.0; color: "#309dcf" }
     }
 
     Row {
@@ -28,7 +30,7 @@ Rectangle {
 
         Image {
             id: logo;
-            source:  "qrc:/images/logo.svg";
+            source: NJUiConstants.UI_LOGO;
             smooth: true;
             height: parent.height - 7;
             width: NJUiConstants.UI_LOGO_WIDTH;
@@ -45,7 +47,6 @@ Rectangle {
                 width: parent.width;
                 color: "white";
                 font.pixelSize: NJUiConstants.UI_HEADER_TITLE_FONT_SIZE;
-                font.bold: true;
                 maximumLineCount: 1
                 elide: Text.ElideRight
             }

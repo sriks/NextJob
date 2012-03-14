@@ -11,7 +11,34 @@ PageStackWindow {
 //        id: mainPage
 //    }
 
+    LoadingScreen {
+        id: loadingScreen;
+        width: parent.width;
+        height: parent.height;
+        z: pageStack.z + 1;
+    }
+
+    Connections {
+        target: njengine;
+        onInitializationCompleted: {
+            showMainPage();
+            loadingScreen.hide();
+        }
+    }
+
+    Timer {
+        id: loadTimer;
+        interval: 400;
+        repeat: false;
+        onTriggered: njengine.initialize();
+    }
+
     Component.onCompleted:  {
+        loadTimer.running = true;
+    }
+
+
+    function showMainPage() {
         pageStack.push("qrc:/qml/NextJob/MainPage.qml")
     }
 
@@ -35,6 +62,10 @@ PageStackWindow {
         pageStack.push("qrc:/qml/NextJob/Alerts.qml");
     }
 
+    function showFavorites() {
+        pageStack.push("qrc:/qml/NextJob/Favorites.qml",{"model":njengine.favoriteJobs()});
+    }
+
     function removeAlert(key) {
         removeAlertConfirmation.key = key;
         removeAlertConfirmation.open();
@@ -42,6 +73,10 @@ PageStackWindow {
 
     function removeAllAlerts() {
         removeAllAlertsConfirmation.open();
+    }
+
+    function handleFavorite(key) {
+        njengine.addToFavorites(key);
     }
 
     function goBack() {
@@ -59,7 +94,7 @@ PageStackWindow {
         id: myMenu
         visualParent: pageStack
         MenuLayout {
-            MenuItem { text: qsTr("Sample menu item") }
+            MenuItem { text: qsTr("About") }
         }
     }
 

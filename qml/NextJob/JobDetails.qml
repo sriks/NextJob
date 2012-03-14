@@ -19,6 +19,11 @@ Page {
         }
 
         ToolIcon {
+            iconSource: "qrc:/images/favorite.svg";
+            onClicked: handleFavorite(jobInfo.key());
+        }
+
+        ToolIcon {
             platformIconId: "toolbar-view-menu"
             anchors.right: (parent === undefined) ? undefined : parent.right
             onClicked: showMenu();
@@ -64,27 +69,58 @@ Page {
 
             Text {
                 id: title;
+                smooth: true;
                 text: jobInfo.title();
                 width: parent.width;
                 wrapMode: Text.WordWrap;
-                font.pixelSize: NJUiConstants.UI_DETAILS_TITLE_FONT_SIZE;
+                font.pixelSize: NJUiConstants.UI_RESULTVIEW_TITLE_FONT_SIZE;
                 font.bold: true;
             }
 
-            Text {
-                id: employerName;
-                text: jobInfo.employer();
+            Row {
+                id: empBox;
                 width: parent.width;
-                wrapMode: Text.WordWrap;
-                font.pixelSize: NJUiConstants.UI_DETAILS_SUBTITLE_FONT_SIZE;
+                spacing: 10;
+
+                Text {
+                    id: empNameText;
+                    smooth: true;
+                    text: "Company:";
+                    font.pixelSize: NJUiConstants.UI_RESULTVIEW_SUBTITLE_FONT_SIZE;
+                    font.bold: true;
+                }
+
+                Text {
+                    id: employerName;
+                    smooth: true;
+                    text: jobInfo.employer();
+                    width: parent.width - (empNameText.width+empBox.spacing);
+                    wrapMode: Text.WordWrap;
+                    font.pixelSize: NJUiConstants.UI_RESULTVIEW_SUBTITLE_FONT_SIZE;
+                }
             }
 
-            Text {
-                id: location;
-                text: jobInfo.location();
+            Row {
+                id: locBox;
                 width: parent.width;
-                wrapMode: Text.WordWrap;
-                font.pixelSize: NJUiConstants.UI_DETAILS_DESC_FONT_SIZE;
+                spacing: 10;
+
+                Text {
+                    id: locNameText;
+                    smooth: true;
+                    text: "Location:";
+                    font.pixelSize: NJUiConstants.UI_RESULTVIEW_SUBTITLE_FONT_SIZE;
+                    font.bold: true;
+                }
+
+                Text {
+                    id: location;
+                    smooth: true;
+                    text: jobInfo.location();
+                    width: parent.width - (locNameText.width+locBox.spacing);
+                    wrapMode: Text.WordWrap;
+                    font.pixelSize: NJUiConstants.UI_RESULTVIEW_SUBTITLE_FONT_SIZE;
+                }
             }
 
             Text {
@@ -92,8 +128,14 @@ Page {
                 text: jobInfo.date();
                 width: parent.width;
                 wrapMode: Text.WordWrap;
-                font.pixelSize: NJUiConstants.UI_DETAILS_DESC_FONT_SIZE;
-                color: "blue";
+                smooth: true;
+                font.pixelSize: NJUiConstants.UI_RESULTVIEW_EXTRATEXT_FONT_SIZE;
+                color: NJUiConstants.UI_RESULTVIEW_EXTRATEXT_COLOR;
+            }
+
+            SeparatorLine {
+                id: separator;
+                width: parent.width;
             }
 
             Text {
@@ -101,8 +143,8 @@ Page {
                 text: jobInfo.description();
                 width: parent.width;
                 wrapMode: Text.WordWrap;
-                font.pixelSize: NJUiConstants.UI_DETAILS_DESC_FONT_SIZE;
-                color: NJUiConstants.UI_CONTENT_TEXT_COLOR;
+                smooth: true;
+                font.pixelSize: NJUiConstants.UI_RESULTVIEW_CONTENT_FONT_SIZE;
             }
 
             Button {

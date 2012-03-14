@@ -18,7 +18,8 @@ public:
       **/
     enum JobModelType {
         Search, // General search, updates all items
-        Alert   // For using with job alert, updates if any new items are found.
+        Alert,   // For using with job alert, updates if any new items are found.
+        Favorites // Used to list favorite jobs
     };
 
     explicit JobModel(JobModelType type,QObject *parent = 0);
@@ -33,7 +34,7 @@ signals:
     void networkRequestFinished();
     void error(QString errorMessage);
     void updateAvailable(int newItemsCount,QVariantMap source);
-    void noUpdateAvailable();
+    void noDataAvailable();
     void dataFinished();
 
 public slots:

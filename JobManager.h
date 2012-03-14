@@ -8,6 +8,7 @@ class JobManagerPrivate;
 class JobModel;
 class JobAlert;
 class AlertModel;
+class JobInfo;
 class RSSManager;
 class JobManager : public QObject
 {
@@ -21,14 +22,20 @@ public:
 protected:
     explicit JobManager(QObject *parent = 0);
 signals:
+    void initializationCompleted();
     void searchResultAvailable(JobModel* jobModel);
     void alertAdded(QVariantMap key);
     void alertRemoved(QVariantMap key);
     void alertUpdated(int newItemsCount,QVariantMap source);
     void alertsCountChanged();
+    void favoriteAdded(QVariantMap key);
+    //void favoriteRemoved(QVariantMap key);
 
 public slots:
+    void initialize();
     JobModel* search(QVariantMap key);
+
+    // Alerts
     void addAlert(QVariantMap key);
     void removeAlert(QVariantMap key);
     void removeAllAlerts();
@@ -40,6 +47,14 @@ public slots:
     void updateAllAlerts();
     AlertModel* newJobsAlertModel();
     AlertModel* allAlertsModel();
+
+    // Favorites
+    JobModel* favoriteJobs();
+    void addToFavorites(QVariantMap key);
+    void removeFromFavorites(QVariantMap key);
+    int favoritesCount() const;
+    QVariantMap favoriteKey(int index) const;
+    bool isFavorite(QVariantMap key) const;
 
 private:
     JobManagerPrivate* d;

@@ -19,4 +19,5 @@ var ADDALERTPAGE    =   "addalert";
 var QUICK_LAUNCH_ADDALERT   = "addalert";
 var QUICK_LAUNCH_SEARCH     = "search";
 var QUICK_LAUNCH_ALERTS     = "alerts";
+var QUICK_LAUNCH_FAVS       = "favs";
 /* Quicklanuch ids */

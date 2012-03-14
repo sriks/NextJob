@@ -43,7 +43,7 @@ private:
     RSSParser* mCurrentParser;
     const JobModel::JobModelType mJobModelType;
     QVariantMap mKey; // key based on which data is fetched
-    QString mBaseUrl; // url formed from supplied data
+    QUrl mBaseUrl; // url formed from supplied data
     QUrl mCurrentUrl; // Current url request
     QList<JobInfo*> mData;
     QList<QUrl> mAdditionalUrls; // urls constructed to fetch more data other than base url

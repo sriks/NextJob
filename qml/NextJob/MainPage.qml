@@ -40,6 +40,8 @@ Page {
                 showAddAlertPage();
             else if(msg === NJConstants.QUICK_LAUNCH_ALERTS)
                 showAlerts();
+            else if(msg === NJConstants.QUICK_LAUNCH_FAVS)
+                showFavorites();
         }
 
 
@@ -76,6 +78,13 @@ Page {
                 icon: "qrc:/images/alerts.svg";
                 onClicked: quickLanucher.quickLaunchClicked(msg);
             }
+
+            QuickLaunchIcon {
+                msg: NJConstants.QUICK_LAUNCH_FAVS;
+                text: "Favorites";
+                icon: "qrc:/images/favorite_quicklaunch.svg";
+                onClicked: quickLanucher.quickLaunchClicked(msg);
+            }
         }
     }
 
@@ -100,13 +109,10 @@ Page {
             font.bold: true
         }
 
-        Rectangle {
-            id: simpleLine
-            width: parent.width - (alertupdatestitlestext.width);
-            height: NJUiConstants.UI_LINE_HEIGHT;
-            color: NJUiConstants.UI_LINE_COLOR;
+        SeparatorLine {
+            id: seperator;
+            width: parent.width - (alertupdatestitlestext.width) - 10;
             anchors.verticalCenter: parent.verticalCenter;
-            smooth: true;
         }
     }
 

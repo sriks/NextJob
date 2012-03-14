@@ -11,7 +11,19 @@ Item {
     property bool loadMoreDataWhenRequired: true;
     signal scrolling;
     signal scrollingStopped;
+    signal noDataFetched;
     width: parent.width;
+
+    function setMessage(msg) {
+        clearMessage();
+        msgLabel.text = msg;
+        msgLabel.visible = true;
+    }
+
+    function clearMessage() {
+        msgLabel.text = "";
+        msgLabel.visible = false;
+    }
 
     function handleDataFinished() {
         loading = false;
@@ -20,27 +32,18 @@ Item {
     function handleError(errorMessage) {
         console.debug("ResultView.qml handleError() "+errorMessage);
         resultListView.model = 0;
-        msgLabel.setMessage("Cannot fetch update.")
+        setMessage("Cannot fetch update.")
     }
 
     Connections {
         target: model;
         onDataFinished: handleDataFinished();
         onError: handleError(errorMessage);
+        onNoDataAvailable: { console.debug("resultview no data available"); noDataFetched();}
     }
 
     Label {
         id: msgLabel
-        function setMessage(msg) {
-            clear();
-            text = msg;
-            visible = true;
-        }
-        function clear() {
-            text = "";
-            visible = false;
-        }
-
         font.pixelSize: NJUiConstants.UI_ERROR_TEXT_FONTSIZE;
         visible: false;
         anchors.fill: parent;
@@ -84,9 +87,9 @@ Item {
                 // Each delegate recieves an instance of JobInfo class
                 id: jobInfoView;
                 property QtObject jobInfo: jobinfo; // role name for jobinfo
-                width: (jobInfo.isValid())?(parent.width):(0);
-                height:(jobInfo.isValid())?(jobInfoContainer.height):(0);
-                visible: jobInfo.isValid();
+                width: parent.width; //(jobInfo.isValid())?(parent.width):(0);
+                height:jobInfoContainer.height; // (jobInfo.isValid())?(jobInfoContainer.height):(0);
+                //visible: jobInfo.isValid();
                 radius: 7;
                 color: "transparent";
                 anchors {
@@ -99,9 +102,22 @@ Item {
                 MouseArea {
                     anchors.fill: parent;
                     onClicked: {
-                        viewedFlag.visible = false;
-                        if(jobInfoView.jobInfo.isValid()) showDetails(jobInfoView.jobInfo);
+                        viewedFlag.hide = true;
+                        showDetails(jobInfoView.jobInfo);
                     }
+                }
+
+                Image {
+                    id: favFlag;
+                    smooth: true;
+                    anchors {
+                        right: parent.right;
+                        verticalCenter: parent.verticalCenter;
+                    }
+                    source: NJUiConstants.UI_FAVJOB_ICON;
+                    width: NJUiConstants.UI_FAVJOB_SMALL_SIZE;
+                    height: NJUiConstants.UI_FAVJOB_SMALL_SIZE;
+                    visible: njengine.isFavorite(jobInfo.key());
                 }
 
                 Row {
@@ -110,15 +126,17 @@ Item {
                     spacing: 12
                     Rectangle {
                         id: viewedFlag
+                        property bool hide: false;
                         height: parent.height - 10;
                         width: NJUiConstants.UI_VIEWED_FLAG_WIDTH;
-                        color: NJUiConstants.UI_VIEWED_FLAG_COLOR;
+                        color: (!hide)?(NJUiConstants.UI_VIEWED_FLAG_COLOR):("transparent");
                         smooth: true;
+                        anchors.verticalCenter: parent.verticalCenter;
                     }
 
                     Column {
                         id: jobInfoColumn
-                        width: parent.width - viewedFlag.width;
+                        width: parent.width - (viewedFlag.width + favFlag.width);
                         spacing: 4;
 
                         Label {
@@ -150,20 +168,20 @@ Item {
                             elide: Text.ElideRight
                             maximumLineCount: 1;
                             font.pixelSize: NJUiConstants.UI_RESULTVIEW_EXTRATEXT_FONT_SIZE;
-                            color: "grey";
+                            color: NJUiConstants.UI_RESULTVIEW_EXTRATEXT_COLOR;
                         }
 
-                        Rectangle {
-                            id: seperator
-                            height: NJUiConstants.UI_LINE_HEIGHT;
-                            color: NJUiConstants.UI_LINE_COLOR;
+                        SeparatorLine {
+                            id: seperator;
                             anchors {
                                 left: parent.left;
                                 right: parent.right;
+                                rightMargin: 10;
                             }
                         }
-                    }
-                }
+                    } // jobInfoColumn
+
+                } // jobInfoContainer
             }
         } // jobInfoDelegate
     }

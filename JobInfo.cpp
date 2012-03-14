@@ -3,21 +3,27 @@
 
 struct JobInfoPrivate {
     QVariantMap info;
+    bool isFav;
 };
 
 JobInfo::JobInfo(const QVariantMap data, QObject *parent)
         :QObject(parent) {
     d = new JobInfoPrivate;
     d->info = data;
+    d->isFav = false;
 }
 
 JobInfo::~JobInfo() {
     delete d;
 }
 
-bool JobInfo::isValid() const {
-    return d->info.value(NJ_PROP_KEY_ISVALID,false).toBool();
+QVariantMap JobInfo::key() const {
+    return d->info;
 }
+
+//bool JobInfo::isValid() const {
+//    return d->info.value(NJ_PROP_KEY_ISVALID,false).toBool();
+//}
 
 QString JobInfo::title() const {
     return d->info.value(NJ_PROP_KEY_TITLE).toString();
@@ -43,12 +49,13 @@ QString JobInfo::date() const {
     return d->info.value(NJ_PROP_KEY_DATE).toString();
 }
 
-bool JobInfo::isFavorite() const {
-    return d->info.value(NJ_PROP_KEY_FAV,false).toBool();
-}
+//bool JobInfo::isFavorite() const {
+//    return d->isFav;
+//}
 
-bool JobInfo::setFavorite(bool fav) {
-    d->info.insert(NJ_PROP_KEY_FAV,fav);
-}
+//bool JobInfo::setFavorite(bool fav) {
+//    d->isFav = fav;
+//    emit favoriteChanged();
+//}
 
 // eof
