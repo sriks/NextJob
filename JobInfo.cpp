@@ -21,10 +21,6 @@ QVariantMap JobInfo::key() const {
     return d->info;
 }
 
-//bool JobInfo::isValid() const {
-//    return d->info.value(NJ_PROP_KEY_ISVALID,false).toBool();
-//}
-
 QString JobInfo::title() const {
     return d->info.value(NJ_PROP_KEY_TITLE).toString();
 }
@@ -49,13 +45,13 @@ QString JobInfo::date() const {
     return d->info.value(NJ_PROP_KEY_DATE).toString();
 }
 
-//bool JobInfo::isFavorite() const {
-//    return d->isFav;
-//}
+bool JobInfo::isFavorite() const {
+    return d->isFav;
+}
 
-//bool JobInfo::setFavorite(bool fav) {
-//    d->isFav = fav;
-//    emit favoriteChanged();
-//}
+bool JobInfo::setFavorite(bool fav) {
+    d->isFav = fav;
+    emit favoriteChanged();
+}
 
 // eof

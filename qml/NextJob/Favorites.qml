@@ -18,7 +18,7 @@ Page {
 
         ToolIcon {
             iconSource: "qrc:/images/delete.svg"
-
+            visible: (favList.count)?(true):(false);
         }
 
         ToolIcon {
@@ -38,10 +38,9 @@ Page {
     ResultView {
         id: favList;
         model: njengine.favoriteJobs();
-        onNoDataFetched: {
-            console.debug("faorites.qml onNoDataFetched");
-            favList.setMessage("No favorites yet");
-        }
+        showDefaultErrorMessages: false;
+        onError: favList.setMessage("No favorites yet");
+        onNoDataFetched: favList.setMessage("No favorites yet");
         width: parent.width;
         anchors {
             top: header.bottom;

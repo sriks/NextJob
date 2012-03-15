@@ -11,11 +11,11 @@ Rectangle {
     height: NJUiConstants.UI_HEADER_HEIGHT;
     color: NJUiConstants.UI_HEADER_COLOR;
 
-    gradient: Gradient {
-         GradientStop { position: 0.0; color: "#63b6db" }
-         // GradientStop { position: 0.15; color: "#8abbd7" }
-         GradientStop { position: 1.0; color: "#309dcf" }
-    }
+//    gradient: Gradient {
+//         GradientStop { position: 0.0; color: "#63b6db" }
+//         // GradientStop { position: 0.15; color: "#8abbd7" }
+//         GradientStop { position: 1.0; color: "#309dcf" }
+//    }
 
     Row {
         id: headerContainer;
@@ -39,13 +39,13 @@ Rectangle {
 
         Column {
             id: headerTextColumn
-            width: parent.width - logo.width;
+            width: parent.width - (logo.width + headerBusyIndicator.width);
 
             Label {
                 id: headerTitle
                 smooth: true;
                 width: parent.width;
-                color: "white";
+                color: NJUiConstants.UI_HEADER_TITLE_COLOR;
                 font.pixelSize: NJUiConstants.UI_HEADER_TITLE_FONT_SIZE;
                 maximumLineCount: 1
                 elide: Text.ElideRight
@@ -54,7 +54,7 @@ Rectangle {
                 id: headerSubTitle;
                 width: parent.width;
                 smooth: true;
-                color: "lightgrey";
+                color: NJUiConstants.UI_HEADER_SUBTITLE_COLOR;
                 font.pixelSize: NJUiConstants.UI_HEADER_SUBTITLE_FONT_SIZE;
                 maximumLineCount: 1
                 elide: Text.ElideRight
@@ -63,13 +63,11 @@ Rectangle {
 
         BusyIndicator {
             id:  headerBusyIndicator;
-            width: 50;
-            height: 50;
+            width: NJUiConstants.UI_HEADER_BUSYINDICATOR_SIZE;
+            height: NJUiConstants.UI_HEADER_BUSYINDICATOR_SIZE;
             running: njHeader.busyIndicatorRunning;
             visible: running;
-            anchors {
-                verticalCenter: parent.verticalCenter;
-            }
+            anchors.verticalCenter: parent.verticalCenter;
         }
     }
 }

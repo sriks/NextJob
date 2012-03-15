@@ -2,9 +2,12 @@
 
 var UI_LOGO             = "qrc:/images/logo.svg";
 var UI_HEADER_HEIGHT    =   73;
-var UI_HEADER_COLOR     =   "#066dab";
+var UI_HEADER_COLOR     =   "#309dcf";
 var UI_HEADER_TITLE_FONT_SIZE = 27;
 var UI_HEADER_SUBTITLE_FONT_SIZE = 20;
+var UI_HEADER_TITLE_COLOR = "white";
+var UI_HEADER_SUBTITLE_COLOR = "white";
+var UI_HEADER_BUSYINDICATOR_SIZE = 50;
 
 // loading screen
 var UI_LOADINGSCREEN_FONT_SIZE = 60;

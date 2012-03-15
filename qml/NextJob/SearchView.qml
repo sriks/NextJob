@@ -54,6 +54,7 @@ Page {
     NJHeader {
         id: header;
         title: "Search";
+        busyIndicatorRunning: (_resultView)?(_resultView.loading):(undefined);
     }
 
     SearchBar {

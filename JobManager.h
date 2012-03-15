@@ -29,7 +29,7 @@ signals:
     void alertUpdated(int newItemsCount,QVariantMap source);
     void alertsCountChanged();
     void favoriteAdded(QVariantMap key);
-    //void favoriteRemoved(QVariantMap key);
+    void favoriteRemoved(QVariantMap key);
 
 public slots:
     void initialize();

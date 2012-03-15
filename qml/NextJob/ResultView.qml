@@ -7,11 +7,14 @@ import "NJUiConstants_harmattan.js" as NJUiConstants;
 Item {
     id: resultViewContainer
     property alias model: resultListView.model;
+    property alias count: resultListView.count;
     property bool loading: false;
     property bool loadMoreDataWhenRequired: true;
+    property bool showDefaultErrorMessages: true;
     signal scrolling;
     signal scrollingStopped;
     signal noDataFetched;
+    signal error;
     width: parent.width;
 
     function setMessage(msg) {
@@ -32,7 +35,9 @@ Item {
     function handleError(errorMessage) {
         console.debug("ResultView.qml handleError() "+errorMessage);
         resultListView.model = 0;
-        setMessage("Cannot fetch update.")
+        if(showDefaultErrorMessages)
+            setMessage("Cannot fetch update.")
+        error();
     }
 
     Connections {
@@ -117,7 +122,7 @@ Item {
                     source: NJUiConstants.UI_FAVJOB_ICON;
                     width: NJUiConstants.UI_FAVJOB_SMALL_SIZE;
                     height: NJUiConstants.UI_FAVJOB_SMALL_SIZE;
-                    visible: njengine.isFavorite(jobInfo.key());
+                    visible: (jobInfo.favorite || njengine.isFavorite(jobInfo.key()));
                 }
 
                 Row {

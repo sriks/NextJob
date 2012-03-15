@@ -334,6 +334,8 @@ JobModel *JobManager::favoriteJobs() {
         d->favoritesModel = new JobModel(JobModel::Favorites,this);
         connect(this,SIGNAL(favoriteAdded(QVariantMap)),
                 d->favoritesModel,SLOT(reset()));
+        connect(this,SIGNAL(favoriteRemoved(QVariantMap)),
+                d->favoritesModel,SLOT(reset()));
         QString favPath = feedManager()->storagePath() + "/" + FAV_FILENAME;
         QVariantMap key;
         key.insert(NJ_FAV_PATH,QVariant(favPath));
@@ -351,7 +353,8 @@ void JobManager::addToFavorites(QVariantMap key) {
 }
 
 void JobManager::removeFromFavorites(QVariantMap key) {
-    d->removeFromFavorites(key);
+    if(d->removeFromFavorites(key))
+        emit favoriteRemoved(key);
 }
 
 int JobManager::favoritesCount() const {

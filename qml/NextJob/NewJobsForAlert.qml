@@ -43,7 +43,7 @@ Page {
             id: newJobs;
             text: "New"
             onClicked: {
-                lv.flipped = !lv.flipped;
+                //lv.flipped = !lv.flipped;
                 lv.loadMoreDataWhenRequired = false;
                 lv.model = alert.model();
             }
@@ -52,7 +52,7 @@ Page {
             id: allJobs;
             text: "All";
             onClicked: {
-                lv.flipped = !lv.flipped;
+                //lv.flipped = !lv.flipped;
                 var m = njengine.search(alert.key());
                 lv.loadMoreDataWhenRequired = true;
                 lv.model = m;

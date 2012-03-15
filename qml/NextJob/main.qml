@@ -75,8 +75,20 @@ PageStackWindow {
         removeAllAlertsConfirmation.open();
     }
 
+    /*!
+      Returns true if added.
+      Returns false if removed.
+      **/
     function handleFavorite(key) {
-        njengine.addToFavorites(key);
+        var res = false;
+        if(!njengine.isFavorite(key)) {
+            res = true;
+            njengine.addToFavorites(key);
+        } else {
+            njengine.removeFromFavorites(key);
+            res = false;
+        }
+        return res;
     }
 
     function goBack() {

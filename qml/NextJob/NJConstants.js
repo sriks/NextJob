@@ -1,6 +1,6 @@
 .pragma library
 
-var APPNAME         =   "NextJob";
+var APPNAME         =   "Next Job";
 
 /* Request parameters */
 // Important: This should be in sync with Constants.h

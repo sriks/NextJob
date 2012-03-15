@@ -20,7 +20,11 @@ Page {
 
         ToolIcon {
             iconSource: "qrc:/images/favorite.svg";
-            onClicked: handleFavorite(jobInfo.key());
+            onClicked: {
+                var result = handleFavorite(jobInfo.key());
+                if(result)
+                    jobInfo.setFavorite(result);
+            }
         }
 
         ToolIcon {
@@ -55,9 +59,24 @@ Page {
             bottomMargin: 10;
         }
 
+        Image {
+            id: favFlag;
+            smooth: true;
+            anchors {
+                right: parent.right;
+                rightMargin: 10;
+                top: parent.top;
+                topMargin: 10
+            }
+            source: NJUiConstants.UI_FAVJOB_ICON;
+            width: NJUiConstants.UI_FAVJOB_SMALL_SIZE;
+            height: NJUiConstants.UI_FAVJOB_SMALL_SIZE;
+            visible: (jobInfo.favorite || njengine.isFavorite(jobInfo.key()));
+        }
+
         Column {
             id: info
-            width: parent.width;
+            width: parent.width - favFlag.width;
             spacing: 7;
 
             anchors {

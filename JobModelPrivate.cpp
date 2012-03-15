@@ -17,7 +17,10 @@ const int MAX_ITEMS         = 60;
 
 // TODO: delegate construction of server url so that we can use it with
 // any server that supports rss output.
-const QString NJ_SERVER_URL = "http://www.indeed.co.in/rss?";
+const QString NJ_SERVER_URL = "http://www.indeed.co.in/rss";
+const QString NJ_SERVER_QUERY_SKILL = "q";
+const QString NJ_SERVER_QUERY_LOC = "l";
+const QString NJ_SERVER_QUERY_START = "start";
 
 JobModelPrivate::JobModelPrivate(JobModel* qPtr,JobModel::JobModelType type,QObject *parent) :
                  QObject(parent),
@@ -84,14 +87,11 @@ void JobModelPrivate::add(QVariantMap key) {
     }
     // Construct base url
     // TODO: Make this to be generic
-    //Construct url using api.
     if(!skill.isEmpty()) {
-         mBaseUrl.setUrl(NJ_SERVER_URL);
-         mBaseUrl.addQueryItem("q",skill);
-         //mBaseUrl = NJ_SERVER_URL + "q=" + skill;
-        if(!loc.isEmpty())
-            mBaseUrl.addQueryItem("l",loc);
-             //mBaseUrl += "&l=" + loc;
+        mBaseUrl.setUrl(NJ_SERVER_URL);
+         mBaseUrl.addQueryItem(NJ_SERVER_QUERY_SKILL,skill);
+         if(!loc.isEmpty())
+            mBaseUrl.addQueryItem(NJ_SERVER_QUERY_LOC,loc);
     }
     sendRequest(mBaseUrl);
 }
@@ -119,8 +119,8 @@ void JobModelPrivate::cleanup() {
     mAdditionalUrls.clear();
 }
 
+
 void JobModelPrivate::fetchMoreData() {
-    qDebug()<<Q_FUNC_INFO;
 #if defined(TEST_WITH_DUMMY_DATA)
     // inject some delay to simulate a typical network request
     QTimer::singleShot(4000,this,SLOT(sendDummyData()));
@@ -130,9 +130,10 @@ void JobModelPrivate::fetchMoreData() {
        !mDataFinished &&
        mCount >= MAX_ITEMS_PER_REQ && mCount <= MAX_ITEMS) {
         int nextStart = (MAX_ITEMS_PER_REQ*mDataOffset)+1;
-        //mBaseUrl+"&start="+QString().setNum(nextStart);
         QUrl url(mBaseUrl);
-        url.addQueryItem("start",QString().setNum(nextStart));
+        url.addQueryItem(NJ_SERVER_QUERY_START,QString().setNum(nextStart));
+        // use resolved to correctly form a url of what we mean.
+        url = mBaseUrl.resolved(url);
         mAdditionalUrls.append(url); // these are removed from feedmgr with cleanup
         sendRequest(url);
     } else {
@@ -235,7 +236,6 @@ QVariantMap JobModelPrivate::parseForInfo(int index) {
 #if defined(TEST_WITH_DUMMY_DATA)
     // Return dummy data
     QVariantMap info;
-    info.insert(NJ_PROP_KEY_ISVALID,true);
     info.insert(NJ_PROP_KEY_TITLE,QString("Qt Developer ")+QString().setNum((mDataOffset-1)*MAX_ITEMS_PER_REQ + index));
     info.insert(NJ_PROP_KEY_EMPNAME,QString("Dreamcode Dreamcode Dreamcode Dreamcode Dreamcode Dreamcode"));
     info.insert(NJ_PROP_KEY_LOCATION,QString("Hyderabad"));
