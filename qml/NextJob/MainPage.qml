@@ -126,6 +126,7 @@ Page {
 
         onAlertClicked: {
             console.debug("alert clicked:"+alertObject);
+            alertObject.setVisited(true);
             showNewJobsForAlert(alertObject);
         }
 

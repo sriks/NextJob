@@ -10,6 +10,7 @@ class JobInfo : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool favorite READ isFavorite NOTIFY favoriteChanged)
+
 public:
     explicit JobInfo(const QVariantMap data,QObject *parent = 0);
     ~JobInfo();

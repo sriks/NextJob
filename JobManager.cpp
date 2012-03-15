@@ -104,11 +104,13 @@ struct JobManagerPrivate {
     }
 
     void saveState() {
+        RSSManager* rssMgr = JobManager::feedManager();
         QMapIterator<QString,JobAlert*> iter(alerts);
         while(iter.hasNext()) {
             JobAlert* a = iter.next().value();
-            JobManager::feedManager()->setUserData(a->model()->baseUrl(),
-                                                   convertToFeedUserData(a->key()));
+            if(!a->isVisited())
+                rssMgr->forgetCheckpoint(a->model()->baseUrl());
+            rssMgr->setUserData(a->model()->baseUrl(),convertToFeedUserData(a->key()));
         }
     }
 

@@ -7,6 +7,7 @@ struct JobAlertPrivate {
     QVariantMap key;
     int newItemCount;
     JobModel* model;
+    bool visited;
 
     ~JobAlertPrivate() {
         model->deleteLater();
@@ -19,6 +20,7 @@ JobAlert::JobAlert(QVariantMap key,QObject *parent) :
     d->key = key;
     d->model = NULL;
     d->newItemCount = 0;
+    d->visited = false;
 }
 
 JobAlert::~JobAlert() {
@@ -77,6 +79,14 @@ void JobAlert::onUpdateAvailable(int newItemsCount,QVariantMap key) {
     d->newItemCount = newItemsCount;
     if(newItemsCount)
         emit updateAvailable(newItemsCount,key);
+}
+
+void JobAlert::setVisited(bool val) {
+    d->visited = val;
+}
+
+bool JobAlert::isVisited() const {
+    return d->visited;
 }
 
 // eof

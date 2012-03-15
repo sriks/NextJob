@@ -29,7 +29,8 @@ public slots:
     int newJobsCount() const;
     void update();
     void onUpdateAvailable(int newJobsCount,QVariantMap key);
-
+    void setVisited(bool val);
+    bool isVisited() const;
 private:
     JobAlertPrivate* d;
 };
