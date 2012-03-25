@@ -126,9 +126,10 @@ void JobModelPrivate::fetchMoreData() {
     QTimer::singleShot(4000,this,SLOT(sendDummyData()));
     return;
 #endif
-    if(/*mJobModelType == JobModel::Search &&*/
-       !mDataFinished &&
-       mCount >= MAX_ITEMS_PER_REQ && mCount <= MAX_ITEMS) {
+    if(JobModel::Favorites == mJobModelType)
+        return;
+
+    if(!mDataFinished && mCount >= MAX_ITEMS_PER_REQ && mCount <= MAX_ITEMS) {
         int nextStart = (MAX_ITEMS_PER_REQ*mDataOffset)+1;
         QUrl url(mBaseUrl);
         url.addQueryItem(NJ_SERVER_QUERY_START,QString().setNum(nextStart));
@@ -216,7 +217,7 @@ void JobModelPrivate::error(QString errMsg,QUrl url) {
 }
 
 JobInfo *JobModelPrivate::at(int index) {
-    qDebug()<<Q_FUNC_INFO<<index;
+    //qDebug()<<Q_FUNC_INFO<<index;
     JobInfo* info = NULL;
     if(index >=0 && index < mData.size()) {
         info = mData.at(index);
@@ -245,7 +246,7 @@ QVariantMap JobModelPrivate::parseForInfo(int index) {
     info.insert(NJ_PROP_KEY_URL,QUrl("http://india.indeed.com/viewjob?t=Software+Engineer&amp;c=NOKIA&amp;l=Bangalore%2C+Karnataka&amp;jk=5a0970bb270c2bd0"));
     return info;
 #else
-    qDebug()<<Q_FUNC_INFO<<index;
+    //qDebug()<<Q_FUNC_INFO<<index;
     if(JobModel::Favorites == mJobModelType && index <= JobManager::instance()->favoritesCount())
         return JobManager::instance()->favoriteKey(index);
 

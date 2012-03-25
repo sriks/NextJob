@@ -28,7 +28,9 @@ var UI_ERROR_TEXT_FONTSIZE = 30;
 var UI_CONTENT_TEXT_COLOR = "grey";
 var UI_DEFAULT_LEFTRIGHT_MARGIN = 10;
 var UI_DEFAULT_LIST_SPACING = 5;
+var UI_DEFAULT_COMPACTLIST_SPACING = 10;
 var UI_DEFAULT_LISTITEM_SPACING = 3;
+var UI_DEFAULT_COMPACTLISTITEM_SPACING = 6;
 
 var UI_VIEWED_FLAG_WIDTH = 5;
 var UI_VIEWED_FLAG_COLOR = "blue";
@@ -43,8 +45,15 @@ var UI_LINE_BORDER_COLOR = "grey";
 var UI_DEFAULT_LISTICON_SIZE = 64;
 var UI_QUICKLAUNCH_BKG_SIZE = 80;
 var UI_QUICKLAUNCH_ICON_SIZE = 52;
-var UI_FAVJOB_ICON = "qrc:/images/favoritejob.svg";
 var UI_FAVJOB_SMALL_SIZE = 32;
+var UI_FAVJOB_ICON = "qrc:/images/favoritejob.svg";
+
+// toolbar icons
+var UI_TOOLICON_BACK = "toolbar-back";
+var UI_TOOLICON_DELETE = "toolbar-delete";
+var UI_TOOLICON_FAV    = "toolbar-favorite-mark";
+var UI_TOOLICON_ADDALERT = "toolbar-add";
+var UI_TOOLICON_MENU     = "toolbar-view-menu";
 
 // Mainpage
 var UI_ALERTUPDATES_FONT_SIZE = 25;

@@ -8,13 +8,14 @@ Item {
     id: resultViewContainer
     property alias model: resultListView.model;
     property alias count: resultListView.count;
+    property alias listView: resultListView;
     property bool loading: false;
     property bool loadMoreDataWhenRequired: true;
     property bool showDefaultErrorMessages: true;
     signal scrolling;
     signal scrollingStopped;
     signal noDataFetched;
-    signal error;
+    signal error(string errMsg);
     width: parent.width;
 
     function setMessage(msg) {
@@ -34,10 +35,10 @@ Item {
 
     function handleError(errorMessage) {
         console.debug("ResultView.qml handleError() "+errorMessage);
-        resultListView.model = 0;
+        //resultListView.model = 0;
         if(showDefaultErrorMessages)
             setMessage("Cannot fetch update.")
-        error();
+        error(errorMessage);
     }
 
     Connections {
@@ -45,6 +46,8 @@ Item {
         onDataFinished: handleDataFinished();
         onError: handleError(errorMessage);
         onNoDataAvailable: { console.debug("resultview no data available"); noDataFetched();}
+        onNetworkRequestStarted: loading = true;
+        onNetworkRequestFinished: loading = false;
     }
 
     Label {

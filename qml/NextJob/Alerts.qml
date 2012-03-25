@@ -10,19 +10,19 @@ Page {
         id: tools
         visible: true
 
-        ToolIcon {
-            platformIconId: "toolbar-back"
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_BACK;
             anchors.left: parent.left;
             onClicked: goBack();
         }
 
-        ToolIcon {
-            iconSource: "qrc:/images/delete.svg"
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_DELETE;
             onClicked: removeAllAlerts();
         }
 
-        ToolIcon {
-            platformIconId: "toolbar-view-menu"
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_MENU;
             anchors.right: (parent === undefined) ? undefined : parent.right
             onClicked: showMenu();
         }

@@ -6,37 +6,9 @@ import "NJConstants.js" as NJConstants;
 PageStackWindow {
     id: _root;
 
-//    initialPage: mainPage
-//    MainPage {
-//        id: mainPage
-//    }
-
-    LoadingScreen {
-        id: loadingScreen;
-        width: parent.width;
-        height: parent.height;
-        z: pageStack.z + 1;
-    }
-
-    Connections {
-        target: njengine;
-        onInitializationCompleted: {
-            showMainPage();
-            loadingScreen.hide();
-        }
-    }
-
-    Timer {
-        id: loadTimer;
-        interval: 400;
-        repeat: false;
-        onTriggered: njengine.initialize();
-    }
-
     Component.onCompleted:  {
         loadTimer.running = true;
     }
-
 
     function showMainPage() {
         pageStack.push("qrc:/qml/NextJob/MainPage.qml")
@@ -63,7 +35,8 @@ PageStackWindow {
     }
 
     function showFavorites() {
-        pageStack.push("qrc:/qml/NextJob/Favorites.qml",{"model":njengine.favoriteJobs()});
+        var m = njengine.favoriteJobs();
+        pageStack.push("qrc:/qml/NextJob/Favorites.qml",{"model":m});
     }
 
     function removeAlert(key) {
@@ -75,22 +48,6 @@ PageStackWindow {
         removeAllAlertsConfirmation.open();
     }
 
-    /*!
-      Returns true if added.
-      Returns false if removed.
-      **/
-    function handleFavorite(key) {
-        var res = false;
-        if(!njengine.isFavorite(key)) {
-            res = true;
-            njengine.addToFavorites(key);
-        } else {
-            njengine.removeFromFavorites(key);
-            res = false;
-        }
-        return res;
-    }
-
     function goBack() {
         pageStack.pop();
     }
@@ -100,6 +57,61 @@ PageStackWindow {
             myMenu.open();
         else
             myMenu.close();
+    }
+
+    function addAlert(key) {
+        var infotext;
+        if(!njengine.isAlertAdded(key)) {
+            njengine.addAlert(key);
+            infotext = qsTr("Alert added");
+        } else {
+            infotext = qsTr("You have already added this alert.");
+        }
+        showInfoBanner(infotext);
+    }
+
+    function handleFavorite(jobInfoObj) {
+        var res = false;
+        var key = jobInfoObj.key();
+        var infotext;
+        if(!njengine.isFavorite(key)) {
+            njengine.addToFavorites(key);
+            res = true;
+            infotext = qsTr("Saved to favorites");
+        } else {
+            njengine.removeFromFavorites(key);
+            res = false;
+            infotext = qsTr("Removed from favorites");
+        }
+        jobInfoObj.setFavorite(res);
+        showInfoBanner(infotext);
+    }
+
+    function showInfoBanner(text) {
+        banner.text = text;
+        banner.show();
+    }
+
+    LoadingScreen {
+        id: loadingScreen;
+        width: parent.width;
+        height: parent.height;
+        z: pageStack.z + 1;
+    }
+
+    Connections {
+        target: njengine;
+        onInitializationCompleted: {
+            showMainPage();
+            loadingScreen.hide();
+        }
+    }
+
+    Timer {
+        id: loadTimer;
+        interval: 400;
+        repeat: false;
+        onTriggered: njengine.initialize();
     }
 
     Menu {
@@ -131,4 +143,11 @@ PageStackWindow {
         onAccepted: njengine.removeAllAlerts();
     }
 
+    NJInfoBanner {
+        id: banner;
+        anchors {
+            top: parent.top;
+            topMargin: 40;
+        }
+    }
 }

@@ -1,6 +1,7 @@
 .pragma library
 
 var APPNAME         =   "Next Job";
+var LOCATION_PLACEHOLDER_TEXT = "Anywhere";
 
 /* Request parameters */
 // Important: This should be in sync with Constants.h

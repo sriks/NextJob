@@ -47,6 +47,7 @@ public slots:
     void updateAllAlerts();
     AlertModel* newJobsAlertModel();
     AlertModel* allAlertsModel();
+    bool isAlertAdded(QVariantMap key) const;
 
     // Favorites
     JobModel* favoriteJobs();

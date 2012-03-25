@@ -1,3 +1,4 @@
+#include <QDebug>
 #include "JobModel.h"
 #include "JobModelPrivate.h"
 

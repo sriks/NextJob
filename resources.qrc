@@ -28,5 +28,7 @@
         <file>qml/NextJob/Favorites.qml</file>
         <file>images/newjobcounticon.svg</file>
         <file>images/favoritejob.svg</file>
+        <file>qml/NextJob/NJToolButton.qml</file>
+        <file>qml/NextJob/NJInfoBanner.qml</file>
     </qresource>
 </RCC>

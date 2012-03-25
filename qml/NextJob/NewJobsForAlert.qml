@@ -1,6 +1,7 @@
 // import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
 import QtQuick 1.1
 import com.nokia.meego 1.0
+import "NJUiConstants_harmattan.js" as NJUiConstants;
 
 Page {
     id: newJobsForAlert;
@@ -9,14 +10,14 @@ Page {
         id: tools
         visible: true
 
-        ToolIcon {
-            platformIconId: "toolbar-back"
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_BACK;
             anchors.left: parent.left;
             onClicked: goBack();
         }
 
-        ToolIcon {
-            platformIconId: "toolbar-view-menu"
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_MENU;
             anchors.right: (parent === undefined) ? undefined : parent.right
             onClicked: showMenu();
         }
@@ -41,21 +42,18 @@ Page {
         }
         Button {
             id: newJobs;
-            text: "New"
+            text: qsTr("New");
             onClicked: {
-                //lv.flipped = !lv.flipped;
                 lv.loadMoreDataWhenRequired = false;
                 lv.model = alert.model();
             }
         }
         Button {
             id: allJobs;
-            text: "All";
+            text: qsTr("All");
             onClicked: {
-                //lv.flipped = !lv.flipped;
-                var m = njengine.search(alert.key());
                 lv.loadMoreDataWhenRequired = true;
-                lv.model = m;
+                lv.model = njengine.search(alert.key());
             }
         }
     }
@@ -65,7 +63,7 @@ Page {
         property bool flipped: false;
         width: parent.width;
         model: alert.model();
-        onModelChanged: model.reset();
+        //onModelChanged: model.reset();
         loadMoreDataWhenRequired: false; // show only new items
         anchors {
             top: jobTypeButtonRow.bottom;

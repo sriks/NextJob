@@ -21,11 +21,13 @@ const QString NJ_FAV_PATH("favspath");
 //const QString NJ_PROP_KEY_ISVALID("isvalid");
 const QString NJ_PROP_KEY_TITLE("title");
 const QString NJ_PROP_KEY_DESCRIPTION("description");
+const QString NJ_PROP_KEY_DETAILED_DESCRIPTION_FETCHED("det_desc_fetched");
 const QString NJ_PROP_KEY_EMPNAME("empname");
 const QString NJ_PROP_KEY_LOCATION("location");
 const QString NJ_PROP_KEY_URL("link");
 const QString NJ_PROP_KEY_SOURCE("source");
 const QString NJ_PROP_KEY_DATE("pubDate");
+
 /* JobInfo keys */
 
 #endif // CONSTANTS_H

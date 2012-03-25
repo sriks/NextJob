@@ -1,6 +1,7 @@
 // import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
 import QtQuick 1.1
 import com.nokia.meego 1.0
+import com.nokia.extras 1.1
 
 import "NJUiConstants_harmattan.js" as NJUiConstants;
 
@@ -12,23 +13,19 @@ Page {
         id: tools
         visible: true
 
-        ToolIcon {
-            platformIconId: "toolbar-back"
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_BACK;
             anchors.left: parent.left;
             onClicked: goBack();
         }
 
-        ToolIcon {
-            iconSource: "qrc:/images/favorite.svg";
-            onClicked: {
-                var result = handleFavorite(jobInfo.key());
-                if(result)
-                    jobInfo.setFavorite(result);
-            }
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_FAV;
+            onClicked: handleFavorite(jobInfo);
         }
 
-        ToolIcon {
-            platformIconId: "toolbar-view-menu"
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_MENU
             anchors.right: (parent === undefined) ? undefined : parent.right
             onClicked: showMenu();
         }
@@ -157,13 +154,32 @@ Page {
                 width: parent.width;
             }
 
-            Text {
-                id: desc;
-                text: jobInfo.description();
+            Item {
+                id: descItem;
                 width: parent.width;
-                wrapMode: Text.WordWrap;
-                smooth: true;
-                font.pixelSize: NJUiConstants.UI_RESULTVIEW_CONTENT_FONT_SIZE;
+                height: desc.height;
+                Text{
+                    id: desc;
+                    text: jobInfo.description;
+                    width: parent.width;
+                    wrapMode: Text.WordWrap;
+                    smooth: true;
+                    font.pixelSize: NJUiConstants.UI_RESULTVIEW_CONTENT_FONT_SIZE;
+                    Component.onCompleted: jobInfo.fetchDetailedDescription();
+                }
+
+                BusyIndicator {
+                    id: descLoading;
+                    visible: true;
+                    running: visible;
+                    width: NJUiConstants.UI_HEADER_BUSYINDICATOR_SIZE;
+                    anchors.centerIn: desc;
+                }
+
+                Connections {
+                    target: jobInfo;
+                    onDescriptionChanged: descLoading.visible = false;
+                }
             }
 
             Button {

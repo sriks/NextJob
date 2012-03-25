@@ -9,8 +9,8 @@ Page {
     tools: ToolBarLayout {
         id: tools
         visible: true
-        ToolIcon {
-            platformIconId: "toolbar-view-menu"
+        NJToolButton {
+            njIconId: "toolbar-view-menu"
             anchors.right: (parent === undefined) ? undefined : parent.right
             onClicked: showMenu();
         }
@@ -118,6 +118,8 @@ Page {
 
     AlertUpdates {
         id: alertUpdates;
+        compactView: true;
+        listView.spacing: NJUiConstants.UI_DEFAULT_COMPACTLIST_SPACING;
         Component.onCompleted: {
             var m = njengine.newJobsAlertModel();
             m.loadData();
@@ -132,7 +134,7 @@ Page {
 
         anchors {
             top: alertUpdatesTitle.bottom;
-            topMargin: 10;
+            topMargin: 1;
             bottom: parent.bottom;
             left: parent.left;
             leftMargin: 15;

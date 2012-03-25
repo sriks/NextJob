@@ -2,11 +2,14 @@
 import QtQuick 1.1
 import com.nokia.meego 1.0
 import "NJUiConstants_harmattan.js" as NJUiConstants;
+import "NJConstants.js" as NJConstants;
 
 Item {
     id: alertsViewContainer;
     signal alertClicked(variant alertObject);
     property alias model: alertsListView.model;
+    property alias listView: alertsListView;
+    property bool compactView: false; // if true location and country are placed in same row
     anchors {
         left: parent.left;
         leftMargin: NJUiConstants.UI_DEFAULT_LEFTRIGHT_MARGIN;
@@ -94,8 +97,8 @@ Item {
                 Column {
                     id: alertInfoTextContainer
                     width: parent.width;
-                    spacing: NJUiConstants.UI_DEFAULT_LISTITEM_SPACING;
-
+                    spacing: (compactView)?(NJUiConstants.UI_DEFAULT_COMPACTLISTITEM_SPACING)
+                                          :(NJUiConstants.UI_DEFAULT_LISTITEM_SPACING);
                     Label {
                         id: lineone;
                         text: alert.skill();
@@ -106,14 +109,20 @@ Item {
                     }
                     Label {
                         id: linetwo;
-                        text: alert.location();
+                        visible: !compactView;
+                        text: (alert.location().length)?(alert.location()):(NJConstants.LOCATION_PLACEHOLDER_TEXT);
                         width: parent.width;
                         wrapMode: Text.WordWrap;
                         font.pixelSize: NJUiConstants.UI_RESULTVIEW_SUBTITLE_FONT_SIZE;
                     }
                     Label {
                         id: linethree;
-                        text: alert.country();
+                        text: {
+                                if(compactView)
+                                    return linetwo.text + " in " + alert.country();
+                                else
+                                    return alert.country();
+                              }
                         width: parent.width;
                         wrapMode: Text.WordWrap;
                         font.pixelSize: NJUiConstants.UI_RESULTVIEW_EXTRATEXT_FONT_SIZE;

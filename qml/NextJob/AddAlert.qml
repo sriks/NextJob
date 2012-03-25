@@ -6,24 +6,25 @@ Page {
     id: searchView;
     property string msg: NJConstants.ADDALERTPAGE;
 
-    function addAlert() {
-        njengine.addAlert({"skill" : searchBar.skill,
-                           "location" : searchBar.location,
-                           "country" : searchBar.country});
+    function addJobAlert() {
+        var key = {"skill" : searchBar.skill,
+         "location" : searchBar.location,
+         "country" : searchBar.country};
+        addAlert(key)
     }
 
     tools: ToolBarLayout {
         id: tools
         visible: true
 
-        ToolIcon {
-            platformIconId: "toolbar-back"
+        NJToolButton {
+            njIconId: "toolbar-back"
             anchors.left: parent.left;
             onClicked: goBack();
         }
 
-        ToolIcon {
-            platformIconId: "toolbar-view-menu"
+        NJToolButton {
+            njIconId: "toolbar-view-menu"
             anchors.right: (parent === undefined) ? undefined : parent.right
             onClicked: showMenu();
         }
@@ -45,13 +46,14 @@ Page {
 
     Button {
         id: addAlertButton;
-        text: "Add Alert";
+        text: qsTr("Add Alert");
+        enabled: (searchBar.skill.length)?(true):(false);
         anchors {
             top: searchBar.bottom;
             topMargin: 15
             horizontalCenter: parent.horizontalCenter;
         }
-        onClicked: addAlert();
+        onClicked: addJobAlert();
     }
 }
 

@@ -139,7 +139,7 @@ Rectangle {
 
             Text {
                 id: advancedSearchToogleText;
-                text: "Show advanced search";
+                text: qsTr("Show advanced search");
                 smooth: true;
                 font.pixelSize: NJUiConstants.UI_SEARCHBAR_ADVSEARCH_FONT_SIZE;
                 font.bold: true
@@ -182,13 +182,13 @@ Rectangle {
 
                 Label {
                     id: locationLabel
-                    text: "Location"
+                    text: "Location";
                     width: (NJUiConstants.UI_TEXTFIELD_LABEL_PERCENTAGE_WIDTH*parent.width)/100; // % of parent width
                     anchors.verticalCenter: parent.verticalCenter;
                 }
                 TextField {
                     id: locationSearchBox
-                    placeholderText: "Add location";
+                    placeholderText: "Enter location";
                     width: parent.width - (locationLabel.width+locationSearchRow.spacing);
                 }
             }

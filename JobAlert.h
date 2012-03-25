@@ -23,8 +23,7 @@ public slots:
     JobModel* model() const;
     QString displayName() const;
     QString displayNameWithJobCount() const;
-    QString skill() const;
-    QString location() const;
+    QString skill() const; QString location() const;
     QString country() const;
     int newJobsCount() const;
     void update();

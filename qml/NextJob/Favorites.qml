@@ -5,24 +5,24 @@ import "NJUiConstants_harmattan.js" as NJUiConstants;
 
 Page {
     id: alerts;
-    property alias model: favList.model;
+    property QtObject model;
     tools: ToolBarLayout {
         id: tools
         visible: true
 
-        ToolIcon {
-            platformIconId: "toolbar-back"
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_BACK;
             anchors.left: parent.left;
             onClicked: goBack();
         }
 
-        ToolIcon {
-            iconSource: "qrc:/images/delete.svg"
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_DELETE;
             visible: (favList.count)?(true):(false);
         }
 
-        ToolIcon {
-            platformIconId: "toolbar-view-menu"
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_MENU;
             anchors.right: (parent === undefined) ? undefined : parent.right
             onClicked: showMenu();
         }
@@ -37,9 +37,10 @@ Page {
 
     ResultView {
         id: favList;
-        model: njengine.favoriteJobs();
         showDefaultErrorMessages: false;
-        onError: favList.setMessage("No favorites yet");
+        loadMoreDataWhenRequired: false;
+        model: alerts.model;
+        onCountChanged: if(count === 0) favList.setMessage("No favorites yet");
         onNoDataFetched: favList.setMessage("No favorites yet");
         width: parent.width;
         anchors {

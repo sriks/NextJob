@@ -2,6 +2,7 @@
 import QtQuick 1.1
 import com.nokia.meego 1.0
 import "NJConstants.js" as NJConstants
+import "NJUiConstants_harmattan.js" as NJUiConstants;
 
 Page {
     id: searchView;
@@ -21,14 +22,30 @@ Page {
         id: tools
         visible: true
 
-        ToolIcon {
-            platformIconId: "toolbar-back"
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_BACK;
             anchors.left: parent.left;
             onClicked: goBack();
         }
 
-        ToolIcon {
-            platformIconId: "toolbar-view-menu"
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_ADDALERT;
+            visible: {
+                if(_resultView)
+                    return (_resultView.count)?(true):(false);
+                else
+                    return false;
+            }
+            onClicked: {
+                var key = {"skill" : searchBar.skill,
+                            "location" : searchBar.location,
+                            "country" : searchBar.country};
+                addAlert(key);
+            }
+        }
+
+        NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_MENU;
             anchors.right: (parent === undefined) ? undefined : parent.right
             onClicked: showMenu();
         }
@@ -54,7 +71,7 @@ Page {
     NJHeader {
         id: header;
         title: "Search";
-        busyIndicatorRunning: (_resultView)?(_resultView.loading):(undefined);
+        busyIndicatorRunning: (_resultView)?(_resultView.loading):(false);
     }
 
     SearchBar {

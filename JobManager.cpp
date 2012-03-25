@@ -23,7 +23,7 @@ struct JobManagerPrivate {
     JobManager* master; // non-owing - do not delete
     QMap<QString,JobAlert*> alerts;
     QList< QVariantMap > favs;
-    QStringList jobInfoKeys;
+    QStringList jobInfoKeys; // these keys are used to restore saved jobs
 
     JobManagerPrivate(JobManager* mgr) {
         master = mgr;
@@ -54,15 +54,9 @@ struct JobManagerPrivate {
                key.value(NJ_COUNTRY).toString().simplified();
     }
 
-    QString favId(QVariantMap key) const {
-        return key.value(NJ_PROP_KEY_TITLE).toString().simplified() +
-               key.value(NJ_PROP_KEY_EMPNAME).toString().simplified() +
-               key.value(NJ_PROP_KEY_LOCATION).toString().simplified() +
-               key.value(NJ_PROP_KEY_URL).toString().simplified();
-    }
-
     void restoreState() {
         restoreAlerts();
+        restoreFavs();
     }
 
     void restoreAlerts() {
@@ -78,7 +72,6 @@ struct JobManagerPrivate {
     }
 
     void restoreFavs() {
-        // favorites
         static bool restored = false;
         if(restored)
             return;
@@ -106,12 +99,14 @@ struct JobManagerPrivate {
     void saveState() {
         RSSManager* rssMgr = JobManager::feedManager();
         QMapIterator<QString,JobAlert*> iter(alerts);
+        qDebug()<<Q_FUNC_INFO<<"saving alerts:"<<alerts.size();
         while(iter.hasNext()) {
             JobAlert* a = iter.next().value();
             if(!a->isVisited())
                 rssMgr->forgetCheckpoint(a->model()->baseUrl());
             rssMgr->setUserData(a->model()->baseUrl(),convertToFeedUserData(a->key()));
         }
+        saveFavorites();
     }
 
     QString favFilePath() const {
@@ -123,6 +118,7 @@ struct JobManagerPrivate {
 
     // writes to fav file
     void saveFavorites() {
+        qDebug()<<Q_FUNC_INFO<<favs.size();
         if(favs.isEmpty())
             return;
         QFile f(favFilePath());
@@ -213,7 +209,6 @@ JobManager *JobManager::instance() {
 void JobManager::initialize() {
     d->restoreState();
     emit initializationCompleted();
-    d->restoreFavs();
 }
 
 /*!
@@ -239,6 +234,8 @@ JobModel* JobManager::search(QVariantMap key) {
   Adds job alert
   **/
 void JobManager::addAlert(QVariantMap key) {
+    if(isAlertAdded(key))
+       return;
     JobAlert* a = alert(key);
     if(a == NULL) {
         a = new JobAlert(key,this);
@@ -329,19 +326,17 @@ AlertModel *JobManager::allAlertsModel() {
     return d->allJobsAlertModel;
 }
 
+bool JobManager::isAlertAdded(QVariantMap key) const {
+    return d->alerts.contains(d->alertId(key));
+}
+
 JobModel *JobManager::favoriteJobs() {
-    d->saveFavorites();
     if(!d->favoritesModel) {
-        d->restoreFavs();
         d->favoritesModel = new JobModel(JobModel::Favorites,this);
         connect(this,SIGNAL(favoriteAdded(QVariantMap)),
                 d->favoritesModel,SLOT(reset()));
         connect(this,SIGNAL(favoriteRemoved(QVariantMap)),
                 d->favoritesModel,SLOT(reset()));
-        QString favPath = feedManager()->storagePath() + "/" + FAV_FILENAME;
-        QVariantMap key;
-        key.insert(NJ_FAV_PATH,QVariant(favPath));
-        d->favoritesModel->addKey(key);
     }
     d->favoritesModel->reset(); // load data
     return d->favoritesModel;
@@ -370,6 +365,5 @@ QVariantMap JobManager::favoriteKey(int index) const {
 bool JobManager::isFavorite(QVariantMap key) const {
     return d->favs.contains(key);
 }
-
 
 // eof
