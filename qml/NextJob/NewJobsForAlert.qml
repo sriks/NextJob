@@ -16,6 +16,29 @@ Page {
             onClicked: goBack();
         }
 
+        ButtonRow {
+            id: jobTypeButtonRow;
+            exclusive: true;
+            checkedButton: newJobs;
+            width: parent.width/2;
+            Button {
+                id: newJobs;
+                text: qsTr("New");
+                onClicked: {
+                    lv.loadMoreDataWhenRequired = false;
+                    lv.model = alert.model();
+                }
+            }
+            Button {
+                id: allJobs;
+                text: qsTr("All");
+                onClicked: {
+                    lv.loadMoreDataWhenRequired = true;
+                    lv.model = njengine.search(alert.key());
+                }
+            }
+        }
+
         NJToolButton {
             njIconId: NJUiConstants.UI_TOOLICON_MENU;
             anchors.right: (parent === undefined) ? undefined : parent.right
@@ -30,34 +53,6 @@ Page {
         busyIndicatorRunning: lv.loading;
     }
 
-    ButtonRow {
-        id: jobTypeButtonRow;
-        exclusive: true;
-        checkedButton: newJobs;
-        width: parent.width/2;
-        anchors {
-            top: header.bottom;
-            topMargin: 15;
-            horizontalCenter: parent.horizontalCenter;
-        }
-        Button {
-            id: newJobs;
-            text: qsTr("New");
-            onClicked: {
-                lv.loadMoreDataWhenRequired = false;
-                lv.model = alert.model();
-            }
-        }
-        Button {
-            id: allJobs;
-            text: qsTr("All");
-            onClicked: {
-                lv.loadMoreDataWhenRequired = true;
-                lv.model = njengine.search(alert.key());
-            }
-        }
-    }
-
     ResultView {
         id: lv
         property bool flipped: false;
@@ -66,8 +61,8 @@ Page {
         //onModelChanged: model.reset();
         loadMoreDataWhenRequired: false; // show only new items
         anchors {
-            top: jobTypeButtonRow.bottom;
-            topMargin: 5;
+            top: header.bottom;
+            topMargin: 7;
             bottom: parent.bottom;
         }
 
