@@ -1,5 +1,6 @@
 .pragma library
 
+var APP_AD_ID       =   "Dreamcode_NextJob_OVI"; // inneractive
 var APPNAME         =   "Next Job";
 var LOCATION_PLACEHOLDER_TEXT = "Anywhere";
 
