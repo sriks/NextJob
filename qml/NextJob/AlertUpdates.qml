@@ -9,6 +9,7 @@ Item {
     signal alertClicked(variant alertObject);
     property alias model: alertsListView.model;
     property alias listView: alertsListView;
+    property alias count: alertsListView.count;
     property bool compactView: false; // if true location and country are placed in same row
     anchors {
         left: parent.left;

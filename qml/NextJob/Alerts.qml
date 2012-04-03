@@ -33,6 +33,7 @@ Page {
         anchors.top: parent.top;
         title: "Alerts";
         subTitle: "View, edit or remove your alerts"
+        counterText: (updates.count)?(updates.count):("");
     }
 
     AlertUpdates {

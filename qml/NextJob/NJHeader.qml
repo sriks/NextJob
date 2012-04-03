@@ -6,6 +6,7 @@ Rectangle {
     id: njHeader;
     property alias title: headerTitle.text;
     property alias subTitle: headerSubTitle.text;
+    property alias counterText: counter.text;
     property bool busyIndicatorRunning: false;
     width: parent.width;
     height: NJUiConstants.UI_HEADER_HEIGHT;
@@ -40,6 +41,7 @@ Rectangle {
         Column {
             id: headerTextColumn
             width: parent.width - (logo.width + headerBusyIndicator.width);
+            anchors.verticalCenter: parent.verticalCenter;
 
             Label {
                 id: headerTitle
@@ -64,10 +66,21 @@ Rectangle {
         BusyIndicator {
             id:  headerBusyIndicator;
             width: NJUiConstants.UI_HEADER_BUSYINDICATOR_SIZE;
-            height: NJUiConstants.UI_HEADER_BUSYINDICATOR_SIZE;
             running: njHeader.busyIndicatorRunning;
             visible: running;
             anchors.verticalCenter: parent.verticalCenter;
+        }
+
+        Label {
+            id: counter;
+            width: NJUiConstants.UI_HEADER_BUSYINDICATOR_SIZE;
+            anchors.top: headerBusyIndicator.top;
+            anchors.verticalCenter: parent.verticalCenter;
+            z: headerBusyIndicator.z + 1;
+            visible: !headerBusyIndicator.running;
+            color: NJUiConstants.UI_HEADER_TITLE_COLOR;
+            font.bold: true;
+            smooth: true;
         }
     }
 }

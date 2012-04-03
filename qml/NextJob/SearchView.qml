@@ -72,6 +72,7 @@ Page {
         id: header;
         title: "Search";
         busyIndicatorRunning: (_resultView)?(_resultView.loading):(false);
+        counterText: (_resultView && _resultView.count)?(_resultView.count):("");
     }
 
     SearchBar {
@@ -95,9 +96,8 @@ Page {
                 topMargin: 2;
                 bottom: parent.bottom;
             }
-// Fix it.
-//            onScrolling: searchBar.disappear();
-//            onScrollingStopped: searchBar.appearWithDelay()
+            onScrolling: searchBar.disappear();
+            onPulling: searchBar.appearWithDelay();
         }
     }
 }

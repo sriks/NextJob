@@ -5,14 +5,17 @@ import "NJUiConstants_harmattan.js" as NJUiConstants;
 
 Rectangle {
     id: searchBar
+    signal searchEntered;
     property Item searchBarContent: searchContainer;
     property alias showDefaultSearchButton: searchButton.visible;
     property alias skill: generalSearchBox.text;
     property alias location: locationSearchBox.text;
     property alias country: countrySelection.text;
+    property bool _sbAppeared: true;
 
-    signal searchEntered;
     function disappear() {
+        if(!_sbAppeared)
+            return;
         if(appearTimer.running)
             appearTimer.stop();
         if(appearAnimation.running)
@@ -21,6 +24,8 @@ Rectangle {
     }
 
     function appearWithDelay() {
+        if(_sbAppeared)
+            return;
         if(disappearAnimation.running)
             disappearAnimation.stop();
         appearTimer.start();
@@ -32,7 +37,7 @@ Rectangle {
 
     Timer {
         id: appearTimer;
-        interval: 2000;
+        interval: 1500;
         repeat: false;
         onTriggered: {
             if(appearAnimation.running)
@@ -43,6 +48,7 @@ Rectangle {
 
     ParallelAnimation {
         id: appearAnimation;
+        onCompleted: _sbAppeared = true;
         PropertyAnimation {
             target: searchBar;
             property: "opacity"
@@ -61,6 +67,7 @@ Rectangle {
 
     ParallelAnimation {
         id: disappearAnimation;
+        onCompleted: _sbAppeared = false;
         PropertyAnimation {
             target: searchBar;
             property: "opacity"

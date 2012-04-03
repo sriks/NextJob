@@ -14,6 +14,7 @@ Item {
     property bool showDefaultErrorMessages: true;
     signal scrolling;
     signal scrollingStopped;
+    signal pulling;
     signal noDataFetched;
     signal error(string errMsg);
     width: parent.width;
@@ -37,7 +38,7 @@ Item {
         console.debug("ResultView.qml handleError() "+errorMessage);
         //resultListView.model = 0;
         if(showDefaultErrorMessages)
-            setMessage("Cannot fetch update.")
+            setMessage("Cannot fetch result.")
         error(errorMessage);
     }
 
@@ -74,7 +75,6 @@ Item {
         interactive: !moreData.visible;
         flickableDirection: Flickable.VerticalFlick;
         cacheBuffer: (100*30); // Each item occupies 100 in height.
-
         onAtYEndChanged:{
             // request for new data set
             if(atYEnd && loadMoreDataWhenRequired && count) {
@@ -83,9 +83,8 @@ Item {
                 model.next();
             }
         }
-        onCountChanged: {
-            loading = false;
-        }
+        onYPosChanged: if(yPos <= 0) pulling();
+        onCountChanged: loading = false;
         onMovementStarted: scrolling();
         onMovementEnded: scrollingStopped();
 
@@ -95,9 +94,8 @@ Item {
                 // Each delegate recieves an instance of JobInfo class
                 id: jobInfoView;
                 property QtObject jobInfo: jobinfo; // role name for jobinfo
-                width: parent.width; //(jobInfo.isValid())?(parent.width):(0);
-                height:jobInfoContainer.height; // (jobInfo.isValid())?(jobInfoContainer.height):(0);
-                //visible: jobInfo.isValid();
+                width: parent.width;
+                height:jobInfoContainer.height;
                 radius: 7;
                 color: "transparent";
                 anchors {
@@ -137,8 +135,7 @@ Item {
                         property bool hide: false;
                         height: parent.height - 10;
                         width: NJUiConstants.UI_VIEWED_FLAG_WIDTH;
-                        color: (!hide)?(NJUiConstants.UI_VIEWED_FLAG_COLOR):("transparent");
-                        smooth: true;
+                        color: (!hide)?(NJUiConstants.UI_VIEWED_FLAG_COLOR):("transparent"); smooth: true;
                         anchors.verticalCenter: parent.verticalCenter;
                     }
 
@@ -149,7 +146,7 @@ Item {
 
                         Label {
                             id: title;
-                            text: jobInfo.title();
+                            text: jobInfo.title() ;
                             width: parent.width;
                             wrapMode: Text.WordWrap;
                             elide: Text.ElideRight

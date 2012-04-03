@@ -33,6 +33,7 @@ Page {
         anchors.top: parent.top;
         title: "Favorite jobs";
         subTitle: "View or remove your favorite jobs";
+        counterText: (favList.count)?(favList.count):("");
     }
 
     ResultView {

@@ -36,7 +36,7 @@ JobModel *JobAlert::model() const {
 }
 
 QString JobAlert::displayName() const {
-    QString name("%1 - %2 - %3");
+    QString name("%1, %2 in %3");
     return name.arg(key().value(NJ_SKILL).toString(),
               key().value(NJ_LOCATION).toString(),
               key().value(NJ_COUNTRY).toString()).simplified();
