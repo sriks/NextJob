@@ -185,21 +185,21 @@ void JobModelPrivate::updateAvailable(QUrl url, int newItemsCount) {
             // Let us handle only fixed number of items per dataset.
             if(items > MAX_ITEMS_PER_REQ)
                 items = MAX_ITEMS_PER_REQ;
+
         } else if(JobModel::Alert == mJobModelType) {
             items = newItemsCount;
         }
 
         int prevCount = mCount;
         mCount += items;
-
         if(mCount == items)
             resetModel();
         else if (mCount > items)
-            append(prevCount-1,mCount);
+            append(prevCount,mCount);
 
         emit q->updateAvailable(newItemsCount,mKey);
 
-        if(items >= MAX_ITEMS_PER_REQ)
+        if(mCount < MAX_ITEMS && items >= MAX_ITEMS_PER_REQ)
             mDataOffset++;
         else
             mDataFinished = true;
@@ -217,7 +217,6 @@ void JobModelPrivate::error(QString errMsg,QUrl url) {
 }
 
 JobInfo *JobModelPrivate::at(int index) {
-    //qDebug()<<Q_FUNC_INFO<<index;
     JobInfo* info = NULL;
     if(index >=0 && index < mData.size()) {
         info = mData.at(index);
@@ -227,7 +226,6 @@ JobInfo *JobModelPrivate::at(int index) {
         int i = (index >= MAX_ITEMS_PER_REQ)?(index%MAX_ITEMS_PER_REQ):(index);
         QVariantMap key = parseForInfo(i);
         info = new JobInfo(key,this);
-        //info->setFavorite(JobManager::instance()->isFavorite(key));
         mData.insert(index,info);
     }
     return info;
