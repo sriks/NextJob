@@ -57,6 +57,9 @@ public slots:
     QVariantMap favoriteKey(int index) const;
     bool isFavorite(QVariantMap key) const;
 
+    // Share
+    void share(QVariantMap key);
+
 private:
     JobManagerPrivate* d;
 };

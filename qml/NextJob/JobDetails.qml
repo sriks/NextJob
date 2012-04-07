@@ -20,6 +20,11 @@ Page {
         }
 
         NJToolButton {
+            njIconId: NJUiConstants.UI_TOOLICON_SHARE;
+            onClicked: njengine.share(jobInfo.key());
+        }
+
+        NJToolButton {
             njIconId: NJUiConstants.UI_TOOLICON_FAV;
             onClicked: handleFavorite(jobInfo);
         }

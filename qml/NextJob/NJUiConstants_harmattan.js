@@ -54,6 +54,7 @@ var UI_TOOLICON_DELETE = "toolbar-delete";
 var UI_TOOLICON_FAV    = "toolbar-favorite-mark";
 var UI_TOOLICON_ADDALERT = "toolbar-add";
 var UI_TOOLICON_MENU     = "toolbar-view-menu";
+var UI_TOOLICON_SHARE     = "toolbar-share";
 
 // Mainpage
 var UI_ALERTUPDATES_FONT_SIZE = 25;

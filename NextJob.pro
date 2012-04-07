@@ -46,6 +46,7 @@ include(qmlapplicationviewer/qmlapplicationviewer.pri)
 qtcAddDeployment()
 
 include (../feedparrot/feedparrot.pri)
+include (../shareui/shareui.pri)
 
 OTHER_FILES += \
     qtc_packaging/debian_harmattan/rules \

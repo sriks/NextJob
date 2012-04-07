@@ -10,6 +10,7 @@
 #include "AlertModel.h"
 #include "JobInfo.h"
 #include "rssmanager.h"
+#include "ShareUi.h"
 
 const QString FAV_FILENAME("njfavs.xml");
 const QString FAV_XML_ROOT("favs");
@@ -364,6 +365,13 @@ QVariantMap JobManager::favoriteKey(int index) const {
 
 bool JobManager::isFavorite(QVariantMap key) const {
     return d->favs.contains(key);
+}
+
+void JobManager::share(QVariantMap key) {
+#ifdef DC_HARMATTAN // Including any of Dreamcode sources should define this macro.
+    ShareUi s;
+    s.share(key.value(NJ_PROP_KEY_TITLE).toString(),"",key.value(NJ_PROP_KEY_URL).toString());
+#endif
 }
 
 // eof
