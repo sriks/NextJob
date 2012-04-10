@@ -18,7 +18,7 @@ class JobManager : public QObject
 public:
     ~JobManager();
     static JobManager* instance();
-    static RSSManager* feedManager();
+    RSSManager* feedManager();
 protected:
     explicit JobManager(QObject *parent = 0);
 signals:
@@ -56,10 +56,12 @@ public slots:
     int favoritesCount() const;
     QVariantMap favoriteKey(int index) const;
     bool isFavorite(QVariantMap key) const;
-
+    //QString favsPath() const
     // Share
     void share(QVariantMap key);
 
+protected slots:
+    void loadAlerts();
 private:
     JobManagerPrivate* d;
 };

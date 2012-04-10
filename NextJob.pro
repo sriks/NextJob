@@ -39,7 +39,9 @@ SOURCES += main.cpp \
     JobInfo.cpp \
     JobModelPrivate.cpp \
     JobAlert.cpp \
-    AlertModel.cpp
+    AlertModel.cpp \
+    Worker.cpp \
+    JobManagerPrivate.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -64,7 +66,9 @@ HEADERS += \
     JobModelPrivate.h \
     Constants.h \
     JobAlert.h \
-    AlertModel.h
+    AlertModel.h \
+    Worker.h \
+    JobManagerPrivate.h
 
 contains(MEEGO_EDITION,harmattan) {
     RESOURCES +=

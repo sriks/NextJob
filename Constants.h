@@ -7,6 +7,12 @@
 
 #include <QString>
 
+/* Internal */
+const QString FAV_FILENAME("njfavs.xml");
+const QString FAV_XML_ROOT("favs");
+const QString FAV_XML_ITEM("item");
+/* */
+
 const QString APP_FOLDER_NAME("nj");
 
 /* Request parameters */
@@ -27,7 +33,7 @@ const QString NJ_PROP_KEY_LOCATION("location");
 const QString NJ_PROP_KEY_URL("link");
 const QString NJ_PROP_KEY_SOURCE("source");
 const QString NJ_PROP_KEY_DATE("pubDate");
-
 /* JobInfo keys */
+
 
 #endif // CONSTANTS_H

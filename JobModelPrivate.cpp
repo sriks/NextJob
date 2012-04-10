@@ -53,7 +53,7 @@ int JobModelPrivate::count() const {
   Convinience method to get feed manager
   **/
 RSSManager *JobModelPrivate::feedMgr() const {
-    return JobManager::feedManager();
+    return JobManager::instance()->feedManager();
 }
 
 /*!

@@ -102,6 +102,7 @@ PageStackWindow {
     Connections {
         target: njengine;
         onInitializationCompleted: {
+            console.debug("init completed");
             showMainPage();
             loadingScreen.hide();
         }
