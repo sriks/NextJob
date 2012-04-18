@@ -51,7 +51,7 @@ Page {
         title: "Job alert";
         subTitle: alert.displayName();
         busyIndicatorRunning: lv.loading;
-        counterText: (lv.count)?(lv.count):("");
+        counterText: (lv.count)?(lv.count):(" ");
     }
 
     ResultView {

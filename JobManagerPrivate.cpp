@@ -15,7 +15,6 @@
 
 JobManagerPrivate::JobManagerPrivate(QObject* parent)
                   :QObject(parent) {
-    //master = mgr;
     searchModel = NULL;
     favoritesModel = NULL;
     newJobsAlertModel = NULL;
@@ -53,34 +52,14 @@ void JobManagerPrivate::restoreState() {
 
 void JobManagerPrivate::handleRestoreCompleted() {
     worker->quit();
-    worker->wait();
     favs = worker->favs();
     alertKeys = worker->alertKeys();
-
-    qWarning()<<Q_FUNC_INFO<<"BUGGY IMPL WITH THREADS --- FIX IT";
-    delete worker;
-    JobManager::instance()->feedManager()->moveToThread(JobManager::instance()->thread());
-
     QListIterator< QVariantMap > iter(alertKeys);
-    while(iter.hasNext()) {
-        //JobManager* jm = JobManager::instance();
-        //qDebug()<<"jm thread is  "<<jm->thread();
+    while(iter.hasNext())
         JobManager::instance()->addAlert(iter.next());
-    }
     emit restoreCompleted();
 }
 
-void JobManagerPrivate::restoreAlerts() {
-//    // alerts
-//    QMap< QUrl,FeedUserData > userdatamap(JobManager::feedManager()->userData());
-//    QMapIterator< QUrl,FeedUserData > iter(userdatamap);
-//    while(iter.hasNext()) {
-//        iter.next();
-//        QVariantMap key = convertToVariantMap(iter.value());
-//        if(!key.isEmpty())
-//            master->addAlert(key);
-//    }
-}
 
 void JobManagerPrivate::saveState() {
     RSSManager* rssMgr = JobManager::instance()->feedManager();
@@ -108,7 +87,7 @@ void JobManagerPrivate::saveFavorites() {
     if(favs.isEmpty())
         return;
     QFile f(favFilePath());
-    // TODO: Should we delete this file before using.
+    // TODO: Should we delete this file before using ?
     if(!f.open(QIODevice::WriteOnly)) {
         qWarning()<<Q_FUNC_INFO<<"Unable to open file in write mode: "<<favFilePath();
         return;
@@ -147,16 +126,6 @@ bool JobManagerPrivate::removeFromFavorites(QVariantMap key) {
         return false;
     }
 }
-
-//QVariantMap JobManagerPrivate::convertToVariantMap(FeedUserData userdata) {
-//    QVariantMap map;
-//    QMapIterator<QString,QString> iter(userdata);
-//    while(iter.hasNext()) {
-//        iter.next();
-//        map.insert(iter.key(),QVariant(iter.value()));
-//    }
-//    return map;
-//}
 
 FeedUserData JobManagerPrivate::convertToFeedUserData(QVariantMap map) {
     FeedUserData userdata;

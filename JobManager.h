@@ -33,6 +33,8 @@ signals:
 
 public slots:
     void initialize();
+
+    // Search
     JobModel* search(QVariantMap key);
 
     // Alerts
@@ -56,12 +58,10 @@ public slots:
     int favoritesCount() const;
     QVariantMap favoriteKey(int index) const;
     bool isFavorite(QVariantMap key) const;
-    //QString favsPath() const
+
     // Share
     void share(QVariantMap key);
 
-protected slots:
-    void loadAlerts();
 private:
     JobManagerPrivate* d;
 };

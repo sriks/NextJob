@@ -11,9 +11,7 @@ class Worker : public QThread
     Q_OBJECT
 public:
     enum TaskType {
-        RestoreState,
-        Alerts,
-        Favorites
+        RestoreState
     };
 
     explicit Worker(JobManagerPrivate* master,QObject *parent = 0);

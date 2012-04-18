@@ -1,3 +1,9 @@
+/*!
+  \class Worker
+  \brief Worker thread to do initail job data loading. This includes parsing data and populating data structures.
+         This is primarily used for initial loading purpose only.
+  **/
+
 #include <QDebug>
 #include <QVariantMap>
 #include <QFile>
@@ -24,11 +30,7 @@ struct WorkerPrivate {
     }
 
     void doTask() {
-        if(Worker::Favorites == task)
-            loadFavorites();
-        else if(Worker::Alerts == task)
-            loadAlerts();
-        else if(Worker::RestoreState == task) {
+        if(Worker::RestoreState == task) {
             loadFavorites();
             loadAlerts();
 #ifdef SIMULATE_LONG_RUNNING_TASK
@@ -39,9 +41,9 @@ struct WorkerPrivate {
                 }
             }
 #endif
-        }
-        else
+       } else {
             qWarning()<<Q_FUNC_INFO<<"Invalid task "<<task;
+        }
     }
 
     QString favFilePath() const {
