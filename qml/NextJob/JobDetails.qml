@@ -4,11 +4,13 @@ import com.nokia.meego 1.0
 import com.nokia.extras 1.1
 
 import "NJUiConstants_harmattan.js" as NJUiConstants;
+import "NJConstants.js" as NJConstants;
 
 Page {
     id: jobDetails;
     property QtObject jobInfo;
-
+    // This describes the type of details.
+    property string type;
     tools: ToolBarLayout {
         id: tools
         visible: true
@@ -26,7 +28,11 @@ Page {
 
         NJToolButton {
             njIconId: NJUiConstants.UI_TOOLICON_FAV;
-            onClicked: handleFavorite(jobInfo);
+            onClicked: {
+                console.debug("jobinfo is "+jobInfo);
+                console.debug("jobinfo is fav "+jobInfo.isFavorite());
+                handleFavorite(jobInfo);
+            }
         }
 
         NJToolButton {
@@ -73,7 +79,13 @@ Page {
             source: NJUiConstants.UI_FAVJOB_ICON;
             width: NJUiConstants.UI_FAVJOB_SMALL_SIZE;
             height: NJUiConstants.UI_FAVJOB_SMALL_SIZE;
-            visible: (jobInfo.favorite || njengine.isFavorite(jobInfo.key()));
+            visible: (jobInfo.favorite /*|| njengine.isFavorite(jobInfo.key())*/);
+            onVisibleChanged: console.debug("visible changed to "+visible);
+            Connections {
+                target: njengine;
+                onAllFavoritesRemoved: visible = false;
+            }
+
         }
 
         Column {

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QVariantMap>
+#include <QSet>
 #include "JobManager.h"
 #include "rssmanager.h"
 
@@ -20,6 +21,7 @@ public:
     void saveFavorites();
     void addToFavorites(QVariantMap key);
     bool removeFromFavorites(QVariantMap key);
+    void removeAllFavorites();
     FeedUserData convertToFeedUserData(QVariantMap map);
     RSSManager* feedManager();
 public slots:
@@ -37,6 +39,7 @@ public:
     QMap<QString,JobAlert*> alerts;
     QList< QVariantMap > alertKeys; // loaded by worker thread
     QList< QVariantMap > favs;
+    QSet<QString> favLookup;
 };
 
 #endif // JOBMANAGERPRIVATE_H

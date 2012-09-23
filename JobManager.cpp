@@ -144,6 +144,12 @@ void JobManager::updateAllAlerts() {
         iter.next().value()->update();
 }
 
+/*!
+ * \brief JobManager::newJobsAlertModel
+ *  Returns alert model for jobs that have new updates.
+ * \return
+ */
+// TODO: Change method name
 AlertModel *JobManager::newJobsAlertModel() {
     if(!d->newJobsAlertModel) {
         d->newJobsAlertModel = new AlertModel(AlertModel::AlertsWithNewJobs,this);
@@ -154,6 +160,12 @@ AlertModel *JobManager::newJobsAlertModel() {
     return d->newJobsAlertModel;
 }
 
+/*!
+ * \brief JobManager::allAlertsModel
+ * Returns alert model for all jobs irrespective whether there are any updates or not.
+ * \return AlertModel
+ */
+// TODO: Change method name
 AlertModel *JobManager::allAlertsModel() {
     if(!d->allJobsAlertModel) {
         d->allJobsAlertModel = new AlertModel(AlertModel::AllAlerts,this);
@@ -183,6 +195,7 @@ JobModel *JobManager::favoriteJobs() {
 void JobManager::addToFavorites(QVariantMap key) {
     if(!isFavorite(key)) {
         d->addToFavorites(key);
+
         emit favoriteAdded(key);
     }
 }
@@ -190,6 +203,11 @@ void JobManager::addToFavorites(QVariantMap key) {
 void JobManager::removeFromFavorites(QVariantMap key) {
     if(d->removeFromFavorites(key))
         emit favoriteRemoved(key);
+}
+
+void JobManager::removeAllFavorites() {
+    d->removeAllFavorites();
+    emit allFavoritesRemoved();
 }
 
 int JobManager::favoritesCount() const {
@@ -201,7 +219,8 @@ QVariantMap JobManager::favoriteKey(int index) const {
 }
 
 bool JobManager::isFavorite(QVariantMap key) const {
-    return d->favs.contains(key);
+    QString favLookupKey = key.value(NJ_FAVS_LOOKUP_KEY).toString().trimmed();
+    return d->favLookup.contains(favLookupKey);
 }
 
 void JobManager::share(QVariantMap key) {

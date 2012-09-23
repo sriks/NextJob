@@ -10,7 +10,7 @@ class JobInfoPrivate;
 class JobInfo : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool favorite READ isFavorite NOTIFY favoriteChanged)
+    Q_PROPERTY(bool favorite READ isFavorite WRITE setFavorite NOTIFY favoriteChanged)
     Q_PROPERTY(QString description READ description NOTIFY descriptionChanged)
 
 public:

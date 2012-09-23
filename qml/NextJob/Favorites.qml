@@ -2,7 +2,7 @@
 import QtQuick 1.1
 import com.nokia.meego 1.0
 import "NJUiConstants_harmattan.js" as NJUiConstants;
-
+import "NJConstants.js" as NJConstants;
 Page {
     id: alerts;
     property QtObject model;
@@ -19,6 +19,7 @@ Page {
         NJToolButton {
             njIconId: NJUiConstants.UI_TOOLICON_DELETE;
             visible: (favList.count)?(true):(false);
+            onClicked: removeAllFavorites();
         }
 
         NJToolButton {
@@ -48,6 +49,7 @@ Page {
             top: header.bottom;
             bottom: parent.bottom;
         }
+        type: NJConstants.QUICK_LAUNCH_FAVS;
     }
 }
 

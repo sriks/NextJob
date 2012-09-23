@@ -23,3 +23,12 @@ var QUICK_LAUNCH_SEARCH     = "search";
 var QUICK_LAUNCH_ALERTS     = "alerts";
 var QUICK_LAUNCH_FAVS       = "favs";
 /* Quicklanuch ids */
+
+/* User visible strings */
+var NJ_STR_SAVED_TO_FAVS        = qsTr("Saved to favorites");
+var NJ_STR_REMOVED_FROM_FAVS    = qsTr("Removed from favorites");
+
+// Confirmation texts
+var NJ_STR_CONF_REMOVE_FAV = qsTr("Do you want to delete this favorite?");
+var NJ_STR_CONF_REMOVE_ALL_FAVS = qsTr("Do you want to delete all your favorites?");
+/* User visible strings */

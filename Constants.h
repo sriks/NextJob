@@ -35,5 +35,6 @@ const QString NJ_PROP_KEY_SOURCE("source");
 const QString NJ_PROP_KEY_DATE("pubDate");
 /* JobInfo keys */
 
-
+// Unique key for favorite look up.
+const QString NJ_FAVS_LOOKUP_KEY = NJ_PROP_KEY_URL;
 #endif // CONSTANTS_H

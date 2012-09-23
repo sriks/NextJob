@@ -22,8 +22,8 @@ PageStackWindow {
         pageStack.push("qrc:/qml/NextJob/SearchView.qml")
     }
 
-    function showDetails(jobInfo) {
-        pageStack.push("qrc:/qml/NextJob/JobDetails.qml",{"jobInfo":jobInfo});
+    function showDetails(jobInfo,type) {
+        pageStack.push("qrc:/qml/NextJob/JobDetails.qml",{"jobInfo":jobInfo,"type":type});
     }
 
     function showNewJobsForAlert(alert) {
@@ -70,21 +70,39 @@ PageStackWindow {
         showInfoBanner(infotext);
     }
 
+    /*!
+      Handles adding or removing of favorites.
+      It adds to favorites if jobinfo is not a favorite.
+      It removes from favorites if jobinfo is already a favorite.
+      **/
     function handleFavorite(jobInfoObj) {
-        var res = false;
         var key = jobInfoObj.key();
         var infotext;
         if(!njengine.isFavorite(key)) {
+            console.debug("not a fav");
             njengine.addToFavorites(key);
-            res = true;
-            infotext = qsTr("Saved to favorites");
+            jobInfoObj.favorite = true;
+            showInfoBanner(NJConstants.NJ_STR_SAVED_TO_FAVS);
         } else {
-            njengine.removeFromFavorites(key);
-            res = false;
-            infotext = qsTr("Removed from favorites");
+            var type = pageStack.currentPage.type;
+            if(type === NJConstants.QUICK_LAUNCH_FAVS) {
+                // Since we cannot restore, this requires a confirmation from user.
+                // Once confirmed, the favorite is deleated
+                console.debug("it is a fav");
+                removeFavoriteConfirmation.key = key;
+                removeFavoriteConfirmation.open();
+            } else {
+                // User is removing fav from search results
+                jobInfoObj.favorite = false;
+                njengine.removeFromFavorites(key);
+                showInfoBanner(NJConstants.NJ_STR_REMOVED_FROM_FAVS);
+            }
         }
-        jobInfoObj.setFavorite(res);
-        showInfoBanner(infotext);
+
+    }
+
+    function removeAllFavorites() {
+        removeAllFavoritesConfirmation.open();
     }
 
     function showInfoBanner(text) {
@@ -136,13 +154,44 @@ PageStackWindow {
 
     QueryDialog {
         id: removeAllAlertsConfirmation;
+        property variant key;
         width: parent.width;
         title: NJConstants.APPNAME;
         message: "Do you want to remove all alerts?"
         acceptButtonText: "Remove";
         rejectButtonText: "Cancel";
-        onAccepted: njengine.removeAllAlerts();
+        onAccepted: {
+            njengine.removeAllAlerts();
+        }
     }
+
+    QueryDialog {
+        id: removeFavoriteConfirmation;
+        property variant key;
+        width: parent.width;
+        title: NJConstants.APPNAME;
+        message: NJConstants.NJ_STR_CONF_REMOVE_FAV;
+        acceptButtonText: "Remove";
+        rejectButtonText: "Cancel";
+        onAccepted: {
+            njengine.removeFromFavorites(key);
+            pageStack.pop();
+            showInfoBanner(NJConstants.NJ_STR_REMOVED_FROM_FAVS);
+        }
+    }
+
+    QueryDialog {
+        id: removeAllFavoritesConfirmation;
+        width: parent.width;
+        title: NJConstants.APPNAME;
+        message: NJConstants.NJ_STR_CONF_REMOVE_ALL_FAVS;
+        acceptButtonText: "Remove";
+        rejectButtonText: "Cancel";
+        onAccepted: {
+            njengine.removeAllFavorites();
+        }
+    }
+
 
     NJInfoBanner {
         id: banner;

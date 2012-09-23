@@ -13,7 +13,7 @@
 #include "JobManager.h"
 
 const int MAX_ITEMS_PER_REQ = 20;
-const int MAX_ITEMS         = 60;
+const int MAX_ITEMS         = 3*MAX_ITEMS_PER_REQ;
 
 // TODO: delegate construction of server url so that we can use it with
 // any server that supports rss output.
@@ -226,6 +226,12 @@ JobInfo *JobModelPrivate::at(int index) {
         int i = (index >= MAX_ITEMS_PER_REQ)?(index%MAX_ITEMS_PER_REQ):(index);
         QVariantMap key = parseForInfo(i);
         info = new JobInfo(key,this);
+        qDebug()<<"Job title is "<<info->title();
+        if(JobManager::instance()->isFavorite(info->key()))
+            qDebug()<<"Job is fav";
+        else
+            qDebug()<<"Job is not fav";
+        info->setFavorite(JobManager::instance()->isFavorite(info->key()));
         mData.insert(index,info);
     }
     return info;

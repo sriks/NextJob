@@ -34,7 +34,7 @@ JobManagerPrivate::~JobManagerPrivate() {
 }
 
 /*!
-  Creates a id for the supplied key
+  Creates an id for the supplied key
   **/
 QString JobManagerPrivate::alertId(QVariantMap key) const {
     // create key which is sum of all key params
@@ -53,6 +53,7 @@ void JobManagerPrivate::restoreState() {
 void JobManagerPrivate::handleRestoreCompleted() {
     worker->quit();
     favs = worker->favs();
+    favLookup = worker->favLookup();
     alertKeys = worker->alertKeys();
     QListIterator< QVariantMap > iter(alertKeys);
     while(iter.hasNext())
@@ -84,8 +85,6 @@ QString JobManagerPrivate::favFilePath() const {
 // writes to fav file
 void JobManagerPrivate::saveFavorites() {
     qDebug()<<Q_FUNC_INFO<<favs.size();
-    if(favs.isEmpty())
-        return;
     QFile f(favFilePath());
     // TODO: Should we delete this file before using ?
     if(!f.open(QIODevice::WriteOnly)) {
@@ -125,6 +124,11 @@ bool JobManagerPrivate::removeFromFavorites(QVariantMap key) {
     } else {
         return false;
     }
+}
+
+void JobManagerPrivate::removeAllFavorites() {
+    favs.clear();
+    this->favoritesModel->reset();
 }
 
 FeedUserData JobManagerPrivate::convertToFeedUserData(QVariantMap map) {

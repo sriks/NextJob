@@ -12,6 +12,9 @@ Item {
     property bool loading: false;
     property bool loadMoreDataWhenRequired: true;
     property bool showDefaultErrorMessages: true;
+    // This property is used to specify the type of data this view is handling.
+    // For example handling of a favorites from favorites view is different from search result view.
+    property string type;
     signal scrolling;
     signal scrollingStopped;
     signal pulling;
@@ -109,7 +112,7 @@ Item {
                     anchors.fill: parent;
                     onClicked: {
                         viewedFlag.hide = true;
-                        showDetails(jobInfoView.jobInfo);
+                        showDetails(jobInfoView.jobInfo,type);
                     }
                 }
 
@@ -124,6 +127,10 @@ Item {
                     width: NJUiConstants.UI_FAVJOB_SMALL_SIZE;
                     height: NJUiConstants.UI_FAVJOB_SMALL_SIZE;
                     visible: (jobInfo.favorite || njengine.isFavorite(jobInfo.key()));
+                    Connections {
+                        target: njengine;
+                        onAllFavoritesRemoved: visible = false;
+                    }
                 }
 
                 Row {

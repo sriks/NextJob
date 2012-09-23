@@ -19,6 +19,7 @@ public:
     void setTask(TaskType task);
     TaskType task() const;
     QList< QVariantMap > favs() const;
+    QSet<QString> favLookup() const;
     QList< QVariantMap > alertKeys() const;
     void clearData();
 protected:

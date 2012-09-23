@@ -82,7 +82,7 @@ Rectangle {
                 id: appname2;
                 smooth: true;
                 text: "b";
-                font.pixelSize: NJUiConstants.UI_LOADINGSCREEN_FONT_SIZE;
+                font.pointSize: NJUiConstants.UI_LOADINGSCREEN_FONT_SIZE;
             }
         }
     }

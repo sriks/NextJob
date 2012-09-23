@@ -30,6 +30,7 @@ signals:
     void alertsCountChanged();
     void favoriteAdded(QVariantMap key);
     void favoriteRemoved(QVariantMap key);
+    void allFavoritesRemoved();
 
 public slots:
     void initialize();
@@ -55,6 +56,7 @@ public slots:
     JobModel* favoriteJobs();
     void addToFavorites(QVariantMap key);
     void removeFromFavorites(QVariantMap key);
+    void removeAllFavorites();
     int favoritesCount() const;
     QVariantMap favoriteKey(int index) const;
     bool isFavorite(QVariantMap key) const;

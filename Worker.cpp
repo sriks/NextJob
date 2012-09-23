@@ -20,7 +20,11 @@
 struct WorkerPrivate {
     JobManagerPrivate* master;
     Worker::TaskType task;
-    QList< QVariantMap > favs;
+    QList< QVariantMap > favs; // contains the xml key value as key value of variant map
+
+    // Contains a look up of favs, using which clients can check whether a jobinfo is marked as favorite or not.
+    // The string used for look up is one of the keys in job info keys defined in NJ_FAVS_LOOKUP_KEY
+    QSet<QString> favLookup;
     QList< QVariantMap > alertKeys;
     QStringList jobInfoKeys; // keys to load
 
@@ -46,6 +50,7 @@ struct WorkerPrivate {
         }
     }
 
+    // TODO: centralize this
     QString favFilePath() const {
         static QString path;
         if(path.isEmpty())
@@ -64,13 +69,15 @@ struct WorkerPrivate {
             int c = p->count();
             qDebug()<<Q_FUNC_INFO<<c;
             for(int i=0;i<c;++i) {
-                QVariantMap key;
+                QVariantMap jobInfo;
                 QStringListIterator iter(jobInfoKeys);
                 while(iter.hasNext()) {
                     QString k = iter.next();
-                    key.insert(k,p->itemElement(i,k));
+                    jobInfo.insert(k,p->itemElement(i,k));
                 }
-                favs.append(key);
+                favs.append(jobInfo);
+                QString favLookupKey = jobInfo.value(NJ_FAVS_LOOKUP_KEY).toString().trimmed();
+                favLookup.insert(favLookupKey);
             }
             delete p;
             restored = true;
@@ -124,6 +131,10 @@ Worker::TaskType Worker::task() const {
 
 QList<QVariantMap> Worker::favs() const {
     return d->favs;
+}
+
+QSet<QString> Worker::favLookup() const {
+    return d->favLookup;
 }
 
 QList<QVariantMap> Worker::alertKeys() const {
